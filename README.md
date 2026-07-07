@@ -65,6 +65,20 @@ As shipped this server is **unchartered** (`antidote.yml` declares no constituti
 the door admits nothing and honest defaults fire nothing — chartering it, and the first
 lattice entries, are deliberate acts recorded in [`constitutions/`](constitutions/README.md).
 
+## The offline origin
+
+The other path ([`docs/offline-origin.md`](docs/offline-origin.md)): `index.html` +
+`sw.js` + [`vault/`](vault/) are the **chronicle** — a service-worker offline app in the
+anecdote style, where the canonical domain delivers the app and every visitor's instance
+is their own. Identity is minted on-device and kept as a non-extractable CryptoKey in
+origin-scoped IndexedDB (`vault/keep.mjs` — the user is their own secret vault; no
+workflow keys on this path). Every entry is signed *and* hash-chained
+(`antidote.chronicle-entry/v1`) so *when* is as provable as *who*; `kind` is an open
+namespace (`answer`, `poll`, `witness`, `note`, …) merged into one timeline by the UI.
+`vault/sign.mjs` byte-mirrors anecdote's `composer/sign.mjs`, so vault signatures and
+content-ids are the constellation's — a chronicle's walk-up bundle admits through the
+intake door above unchanged, and the door tells you which of your records were new.
+
 ## See also
 
 - civic-node [#88](https://github.com/FCCN-ANTIBODY/civic-node/issues/88) — the aggregation

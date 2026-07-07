@@ -181,6 +181,21 @@ licensed for exactly that use.
   everything the Atlas lists. The Atlas still holds no archive; it advertises where
   archives are wanted.
 
+## The offline origin — the chronicle
+
+Everything above is a server some operator runs — the **enterprise path**, where a key is
+seated as a workflow secret. The same grammar runs the other way (`docs/offline-origin.md`):
+the **offline-origin path**, where the canonical domain delivers a service-worker app and
+each visitor's instance is their own — *the user is their own secret vault*, minting a
+non-extractable device identity with WebCrypto and keeping a **chronicle**: one person's
+signed, hash-chained historical log of answers, polls, and witnessed things, merged into a
+single timeline. Sign-then-self-archive makes the chronicle a ballot's *first witness*
+("logged right here, right then" — the chain position proves when-ish, beyond what the key
+proves); content-id equality makes the walk-up gesture work — offer your records as loose
+mail and the intake door tells you which were new. The witness entry is the same shape at
+every altitude: a person chronicling what they saw, or an Atlas teeing everything it
+handles to its registered archivists.
+
 ## Registration and the check-in — work rides with the initiator
 
 Both directions were pitched — Atlas pushes flushes to Antidote; Antidote crawls Atlases
