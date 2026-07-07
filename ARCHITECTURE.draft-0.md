@@ -279,10 +279,33 @@ the mission self-funding.
 10. **Antidote never reaches out first.** Registration, flush, reveal, commission — the
     initiator carries the work.
 
+## The cascade tier — aggregation is Antidote's
+
+Everything above archives *one* server's intake. Aggregation *across* servers is a
+**cascade of Antidote servers distilling by shape containment** (city → county → state →
+…), specced in [`docs/cascade.md`](docs/cascade.md) and civic-node **#94**. The load-bearing
+claims, in brief:
+
+- **Aggregation leaves Atlas.** Only an Antidote can determine a COMMON CONSTITUTION (what
+  a combined dataset is *allowed* to be), so rollup lives here; Atlas is the live coarse
+  gauge, a public discovery layer, and a ballot intake — never a cross-scope aggregator.
+- **The placement ledger is the seed corn** — `(content-id → best-known-finest-shape →
+  original constitution)`, joined against a *versioned shape catalog* at query time, never
+  evicted below the raw it points to. Every rolled-up vat is a reconstructable view;
+  boundary changes are re-joins, not migrations.
+- **Default-hold** — a record whose shape has no instantiated parent holds at the
+  boundary and backlogs rather than evict into a hole.
+- **The runoff tray** — unasked-for data is retained (consented, on ice) so a late-arriving
+  asker can query *what was being spoken about before they paid attention*: how to know
+  what you didn't ask.
+
 ## Open questions
 
 - The **plaque's minimum face** — question + commitments + receipt is the floor; what
   else, per provenance class, earns a place in plaintext (timestamps? scope?).
+- **The cascade's counsel gate** — the `deeper_constitution` passport at scale
+  (`docs/cascade.md`): "deeper overrides a restrictive arrival-COMMON" must queue for
+  counsel, never auto-admit; plus shape-catalog provenance and the runoff's retention limits.
 - The **standard-constitution lattice** — the starter set of named, hash-addressed
   constitutions, and where the canonical texts live (`.github`, per the draft-0
   promotion convention?).
@@ -301,7 +324,8 @@ the mission self-funding.
 
 - civic-node **#88** (the place above; the public husk — commit-and-reveal + freshness
   lease; Antidote-as-archivist), **#91** (the hearsay pile; deflate; flush = a presumed
-  PR; sharding by respondent), **#86/#87** (the ballot door; fronted polls).
+  PR; sharding by respondent), **#86/#87** (the ballot door; fronted polls), **#94** (the
+  cascade tier — containment distillation; `docs/cascade.md` is its in-repo home).
 - `civic-node/ANTIDOTE.draft-0.md` (the name is the license; the queue; sheltering, not
   harvesting), `NONPROFIT.draft-0.md` (anti-capture as architecture).
 - `data-pile/CONTRACT.md` (the encrypted append log; ratchet; `bin/prove`),
