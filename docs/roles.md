@@ -154,6 +154,22 @@ Two guards keep the requirement from becoming a harvest:
   voluntary over-disclosure is consent, but *encouraged* over-disclosure is the harvest
   pattern wearing a friendly face.
 
+**Seen right, this isn't a gate — it's a credential of lived experience.** A community poll
+could require that you *go to the park weekly* to answer a poll about the park. The check is
+not invasive: the predicate **is** the scope — "park weekly" leaks only "park weekly,"
+nothing else about your life — so a requirement can be surprisingly **sophisticated**
+(sustained, lived behavior) while disclosing almost nothing. And it is the honest form of
+constituency: **relevance by lived experience**, not residence — the people who actually show
+up are exactly the right people to ask. The valence is set by *who holds it*: computed on your
+own device from your own log and **presented by you**, it is a credential — *you can talk about
+your history with a signature* — not a check done *to* you. It is the same signed-history
+primitive as the portable job/hiring credential (the money-layer seed: "your met-records
+become data you can cite — offline and yours"); civic polls, belonging, and employment are its
+faces. The invasive form exists only when it is **compelled and sprawling** ("not when the
+state requires it to") — which is exactly what the curation guard, narrow-by-default, and the
+voluntary posture are there to catch. The park credential is the native case; the full-history
+dump is the exception that must justify itself.
+
 **Subscribe, never own — and that is a structural fact, not a policy.** A buyer can only
 ever acquire the rights the authors licensed, and the authors granted *use under their
 constitution*, never ownership. A buyer demanding **all rights reserved** is trying to
