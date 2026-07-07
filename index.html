@@ -1,0 +1,146 @@
+<!doctype html>
+<!-- index.html — THE CHRONICLE (the offline origin; docs/offline-origin.md). The canonical domain
+     delivers this page; the instance it becomes is yours: identity minted on-device and kept
+     non-extractable (vault/keep.mjs), every entry signed and chained (vault/chronicle.mjs), all of
+     it in origin-scoped IndexedDB. One person, one instance database — we are expecting to hold
+     it all. No backend, no vendor, no telemetry; the enterprise path (workflow keys, servers) is
+     the same grammar operated by someone else, and this page never needs it. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Antidote — your chronicle</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0 auto; max-width: 44rem; padding: 1rem; background: #101418; color: #e8ecef;
+         font: 16px/1.5 system-ui, sans-serif; }
+  header { display: flex; align-items: baseline; gap: .6rem; flex-wrap: wrap; }
+  h1 { font-size: 1.2rem; margin: .2rem 0; }
+  .fpr { font-family: ui-monospace, monospace; font-size: .72rem; color: #7fd4a8; word-break: break-all; }
+  .muted { color: #9aa7b0; font-size: .85rem; }
+  fieldset { border: 1px solid #2a3138; border-radius: .5rem; margin: 1rem 0; padding: .8rem; }
+  legend { padding: 0 .4rem; color: #9aa7b0; font-size: .85rem; }
+  textarea, input[type=text] { width: 100%; box-sizing: border-box; background: #0a0d10; color: #e8ecef;
+         border: 1px solid #2a3138; border-radius: .35rem; padding: .5rem; font: inherit; }
+  textarea { min-height: 4.5rem; font-family: ui-monospace, monospace; font-size: .8rem; }
+  button { background: #18222b; color: #e8ecef; border: 1px solid #33404a; border-radius: .4rem;
+         padding: .45rem .9rem; font: inherit; cursor: pointer; }
+  button:hover { border-color: #7fd4a8; }
+  .row { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .5rem; }
+  ol { list-style: none; padding: 0; }
+  li.entry { border-left: 3px solid #2a3138; margin: .6rem 0; padding: .3rem .8rem; }
+  li.entry .kind { color: #7fd4a8; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; }
+  li.entry .at { color: #9aa7b0; font-size: .75rem; margin-left: .5rem; }
+  li.entry pre { margin: .3rem 0 0; white-space: pre-wrap; word-break: break-word;
+         font-size: .78rem; color: #c7d1d9; max-height: 9rem; overflow: auto; }
+  #spine.ok { color: #7fd4a8; } #spine.bad { color: #e08a8a; }
+  a { color: #7fd4a8; }
+</style>
+</head>
+<body>
+<header>
+  <img src="./icon.svg" alt="" width="34" height="34">
+  <h1>Your chronicle</h1>
+  <span id="spine" class="muted">…</span>
+</header>
+<p class="muted">A historical log that is yours alone: answers you cast, polls you made, things you
+witnessed — signed by a key minted on this device that never leaves it, each entry chained to the
+last so <em>when</em> is as provable as <em>who</em>. Offline first; the origin only delivers the app.</p>
+<div class="fpr" id="fpr">minting your identity…</div>
+
+<fieldset>
+  <legend>note — mark the moment</legend>
+  <input type="text" id="note" placeholder="what happened?">
+  <div class="row"><button id="add-note">chronicle it</button></div>
+</fieldset>
+
+<fieldset>
+  <legend>answer — archive a signed ballot (sign-then-self-archive: your first witness)</legend>
+  <textarea id="ballot" placeholder='paste a signed anecdote.ballot/v1 (JSON)'></textarea>
+  <div class="row"><button id="add-answer">chronicle it</button></div>
+</fieldset>
+
+<fieldset>
+  <legend>witness — something external you saw (kept whole, named by content-id)</legend>
+  <textarea id="seen" placeholder="paste any JSON thing"></textarea>
+  <input type="text" id="seen-note" placeholder="optional note">
+  <div class="row"><button id="add-witness">chronicle it</button></div>
+</fieldset>
+
+<fieldset>
+  <legend>the spine</legend>
+  <div class="row">
+    <button id="verify">verify the chain</button>
+    <button id="head">attest the head</button>
+    <button id="walkup">export walk-up bundle</button>
+    <button id="export">export everything</button>
+  </div>
+  <p class="muted">The walk-up bundle is loose mail an antidote server's door already accepts —
+  offer it, and the door's manifest tells you which of your records were new.</p>
+</fieldset>
+
+<h1>Timeline</h1>
+<p class="muted">Every kind, shuffled together, newest first. The chain underneath stays in the
+order it was lived.</p>
+<ol id="timeline"></ol>
+
+<script type="module">
+import { idbStore } from "./vault/store.mjs";
+import { keepIdentity } from "./vault/keep.mjs";
+import { append, entries, verifyChronicle, attestHead, witness, timeline, exportLooseMail } from "./vault/chronicle.mjs";
+
+if ("serviceWorker" in navigator) addEventListener("load", () => {
+  navigator.serviceWorker.register("./sw.js").catch(() => {});
+});
+
+const store = idbStore(); // "antidote"/"vault": identity AND chronicle — origin-scoped, yours
+const me = await keepIdentity(store);
+document.getElementById("fpr").textContent = (me.minted ? "minted just now — " : "held — ") + me.fingerprint;
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+
+async function render() {
+  const log = await entries(store);
+  $("timeline").innerHTML = timeline(log).map((e) => `<li class="entry">
+    <span class="kind">${esc(e.kind)}</span><span class="at">${esc(e.at)}</span> <span class="at">#${e.seq}</span>
+    <pre>${esc(JSON.stringify(e.body, null, 1))}</pre></li>`).join("") ||
+    `<li class="entry"><span class="muted">nothing yet — the chain starts with your first entry</span></li>`;
+  const v = await verifyChronicle(log);
+  const spine = $("spine");
+  spine.textContent = v.ok ? `spine ok — ${v.length} link${v.length === 1 ? "" : "s"}` : "SPINE BROKEN";
+  spine.className = v.ok ? "ok" : "bad";
+}
+
+function download(name, obj) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" }));
+  a.download = name; a.click(); URL.revokeObjectURL(a.href);
+}
+const parse = (t) => { try { return JSON.parse(t); } catch { alert("that isn't JSON"); return null; } };
+
+$("add-note").onclick = async () => {
+  const text = $("note").value.trim(); if (!text) return;
+  await append(store, me, { kind: "note", body: { text } }); $("note").value = ""; render();
+};
+$("add-answer").onclick = async () => {
+  const b = parse($("ballot").value); if (!b) return;
+  if (!b.sig) { alert("a chronicle answer is the SIGNED ballot — sign it first"); return; }
+  await append(store, me, { kind: "answer", body: b }); $("ballot").value = ""; render();
+};
+$("add-witness").onclick = async () => {
+  const thing = parse($("seen").value); if (!thing) return;
+  const body = await witness(thing, { note: $("seen-note").value.trim() || undefined });
+  await append(store, me, { kind: "witness", body }); $("seen").value = ""; $("seen-note").value = ""; render();
+};
+$("verify").onclick = render;
+$("head").onclick = async () => download("chronicle-head.json", await attestHead(store, me));
+$("walkup").onclick = async () => download("walk-up-bundle.json", exportLooseMail(await entries(store), me.fingerprint));
+$("export").onclick = async () => download("chronicle.json", { schema: "antidote.chronicle/v1", self: me.fingerprint, entries: await entries(store) });
+
+render();
+</script>
+</body>
+</html>

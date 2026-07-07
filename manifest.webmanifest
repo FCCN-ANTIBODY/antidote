@@ -1,0 +1,11 @@
+{
+  "name": "Antidote — your chronicle",
+  "short_name": "Antidote",
+  "description": "Your own historical log: every answer, poll, and witnessed thing, signed and chained, held on your device. The offline origin — the canonical domain delivers the app; the instance is yours.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#101418",
+  "theme_color": "#101418",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
