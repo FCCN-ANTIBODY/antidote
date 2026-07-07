@@ -1,0 +1,114 @@
+name: "Antidote intake"
+description: >-
+  Run the intake door (bin/intake-verify + bin/punch) over one intake bundle — the presumed
+  PR's payload: verify from anyone, dedup by content-id, judge each arrival's constitution
+  against the server's declared one (admit / queue / refuse), then punch the admissions:
+  cutouts onto the plaque index, a hash-linked custody entry onto the ledger, and the raw
+  records staged to the ice outbox. Commits the manifest, plaques, ledger, and queue when
+  they change. The ice outbox is deliberately NOT committed by default — delivery to the ice
+  pile (an ordinary data-pile) is its own gesture with its own consent.
+
+  Like the Atlas's drop action, this is the reusable form of antidote's own bin tools: a
+  workspace that mounts antidote at .antidote-engine/ can
+  `uses: ./.antidote-engine/.github/actions/intake` to run the same door over its OWN
+  charter and data. Needs contents:write on the calling repo (the built-in GITHUB_TOKEN).
+
+inputs:
+  inbox:
+    description: "Intake bundle JSON — { from?, constitution?, ballots?:[...], sealed?:[...] } or a bare [ ...ballots ]."
+    required: false
+    default: "_data/intake-inbox.json"
+  charter:
+    description: "Path to the server charter (the declared constitution — the ratchet rule)."
+    required: false
+    default: "antidote.yml"
+  lattice:
+    description: "Path to the known-constitution lattice."
+    required: false
+    default: "_data/lattice.json"
+  output:
+    description: "Path the fate manifest is written to."
+    required: false
+    default: "intake.json"
+  index:
+    description: "Directory the plaque index is written under."
+    required: false
+    default: "index"
+  ledger:
+    description: "Path to the intake ledger."
+    required: false
+    default: "ledger/manifest.json"
+  queue:
+    description: "Path to the human-paced constitution queue."
+    required: false
+    default: "_data/constitution-queue.json"
+  ice-outbox:
+    description: "Path the raw admissions are staged to for the ice pile."
+    required: false
+    default: "ice-outbox.json"
+  ledger-key:
+    description: "The ledger signer's private key (base64 pkcs8) — pass the caller's secret. Empty generates a fresh one at the key path (first run only; keep it thereafter)."
+    required: false
+    default: ""
+  publish:
+    description: "Commit + push the manifest, plaques, ledger, fingerprint, and queue when they change."
+    required: false
+    default: "true"
+  git-user-name:
+    description: "Commit author name used when publishing."
+    required: false
+    default: "antidote-intake"
+  git-user-email:
+    description: "Commit author email used when publishing."
+    required: false
+    default: "antidote-intake@users.noreply.github.com"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Seat the ledger signer
+      if: ${{ inputs.ledger-key != '' }}
+      shell: bash
+      env:
+        LEDGER_KEY: ${{ inputs.ledger-key }}
+      run: |
+        set -euo pipefail
+        mkdir -p keys
+        printf '%s\n' "$LEDGER_KEY" > keys/ledger-signer.pk8
+        chmod 600 keys/ledger-signer.pk8
+
+    - name: Run the intake door
+      shell: bash
+      # The logic is the committed bin tools (node stdlib, no deps); this points them at the caller's data.
+      env:
+        ANTIDOTE_INTAKE_IN: ${{ inputs.inbox }}
+        ANTIDOTE_SELF: ${{ inputs.charter }}
+        ANTIDOTE_LATTICE: ${{ inputs.lattice }}
+        ANTIDOTE_INTAKE_OUT: ${{ inputs.output }}
+        ANTIDOTE_INDEX: ${{ inputs.index }}
+        ANTIDOTE_LEDGER: ${{ inputs.ledger }}
+        ANTIDOTE_QUEUE: ${{ inputs.queue }}
+        ANTIDOTE_ICE_OUT: ${{ inputs.ice-outbox }}
+      run: |
+        set -euo pipefail
+        "$GITHUB_ACTION_PATH/../../../bin/intake-verify"
+        "$GITHUB_ACTION_PATH/../../../bin/punch"
+
+    - name: Publish the intake if it changed
+      if: ${{ inputs.publish == 'true' }}
+      shell: bash
+      env:
+        OUTPUT: ${{ inputs.output }}
+        INDEX: ${{ inputs.index }}
+        LEDGER: ${{ inputs.ledger }}
+        QUEUE: ${{ inputs.queue }}
+        GIT_USER_NAME: ${{ inputs.git-user-name }}
+        GIT_USER_EMAIL: ${{ inputs.git-user-email }}
+      run: |
+        set -euo pipefail
+        git add "$OUTPUT" "$INDEX" "$LEDGER" "$QUEUE" keys/ledger.fpr 2>/dev/null || true
+        if git diff --cached --quiet; then echo "no intake changes"; exit 0; fi
+        git config user.name  "$GIT_USER_NAME"
+        git config user.email "$GIT_USER_EMAIL"
+        git commit -m "intake: punch admitted cutouts + extend the custody ledger"
+        git push

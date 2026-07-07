@@ -1,0 +1,24 @@
+name: "Antidote · tests"
+
+# The bin tools are node-stdlib-only (the vendorless way), so the whole suite is:
+# every test/*.test.mjs, no install step.
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run the suites
+        run: |
+          set -euo pipefail
+          for t in test/*.test.mjs; do node "$t"; done

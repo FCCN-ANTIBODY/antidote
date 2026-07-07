@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# bin/judge-constitution — exec shim; the logic lives in judge-constitution.mjs (importable by test/*.test.mjs).
+exec node "$(cd "$(dirname "$0")" && pwd)/judge-constitution.mjs" "$@"

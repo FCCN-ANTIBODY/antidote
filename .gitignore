@@ -1,0 +1,3 @@
+# the ledger signer's private half never lands in the repo (the keys/dump-signer.pk8 convention);
+# only the public fingerprint (keys/ledger.fpr) is committed.
+keys/*.pk8
