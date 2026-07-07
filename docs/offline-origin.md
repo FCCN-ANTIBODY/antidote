@@ -168,6 +168,15 @@ can't show what it said.
 - **The share punch, in code** — `voidPunch` (keep content, clip the credential, retain the
   pre-clip `ballotId`) and `crunch` (bodies → commitments, spine intact) are named here but
   not yet built; the vault is their home when they land.
+- **Opportunistic self-verification (the identity-theft lottery).** One of the things the
+  privileged gesture *rolls* could be a **verify-attempt on a random record** — Antidote may
+  even hand out a list of line-items it wants corroborated. Most rolls miss; but a **forgery**
+  hit means someone is failing to impersonate you (a security signal you get for free by
+  always trying to verify yourself), and a **real** hit is fresh corroborating metadata — and
+  being asked to sign your own thing is a reward, not a punishment. It's the archive's escape
+  hatch for the metadata-authenticity it otherwise treats fast-and-loose (`ARCHITECTURE.draft-0.md`
+  open questions). Opportunistic, never a mandatory checkpoint; not the thing you come here to
+  find out. Shape TBD.
 
 ## See also
 

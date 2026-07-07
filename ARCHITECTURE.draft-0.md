@@ -203,6 +203,20 @@ Two existing shapes absorb this:
   seen and consented to, human-paced. The judge automates the known lattice; the queue
   absorbs everything else. A fuzzy judgment is never the sole gate.
 
+**Where the lattice comes from — the licensing model** (`docs/roles.md`). The originator or
+buyer **writes the license they want to name** (free or paid — the gate is *licensed*, not
+*paid*); Antidote curates and lists the ones it will broker (Atlas carries them as want-ads,
+a market of intent); the recurring ones crystallize into the standard lattice, bottom-up.
+The answering client **forces the solicited license only on solicited polls** — everywhere
+else you keep a wildcard, including the honest *"not usable for anything"* refusal — so
+consent is *provably named at the source* exactly where it must be. And a buyer may
+**subscribe, never own**: all-rights-reserved is *incoherent* (you can't reserve rights the
+authors never granted), which is both the anti-enclosure line and the foundation of the
+per-use entitlement. **The license separates research from surveillance** — the same
+amorphous query is spying unlicensed and science licensed — which is what lets the research
+surface widen safely, *provided* the individual-disclosure discipline still masks the person
+(licensed is not un-redacted).
+
 ## The antidote bottle — the demand side
 
 The same architecture runs in reverse as a commissioning instrument. A buyer — a
@@ -348,6 +362,12 @@ the mission self-funding.
     funds; it tracks and transmits nothing.
 13. **Antidote is not for the public watchers.** It serves the constituent (verify + get
     paid), the seeker, and the operator; public looking-in is Atlas's role (`docs/roles.md`).
+14. **Licensed, not paid.** The gate is the constitution; payment is orthogonal. A commission
+    may be free; the license is authored by the originator/buyer, forced only on solicited
+    polls, wildcard otherwise.
+15. **Subscribe, never own.** A buyer acquires only the licensed use the authors granted;
+    all-rights-reserved is incoherent. And **licensed is not un-redacted** — the license
+    grants the purpose; coarse standing and the reveal threshold still mask the individual.
 
 ## The cascade tier — aggregation is Antidote's
 
@@ -390,6 +410,16 @@ claims, in brief:
   (`docs/roles.md`).
 - **The `report` kind** — the exact shape of an archived Atlas free-form report, and the
   charter flag that opts a server into the public-record role.
+- **Opportunistic self-verification — the metadata-authenticity escape hatch.** We deferred
+  judging metadata authenticity at every layer (Atlas shovels it downstream unexamined; here
+  at the archive we must decide). A background idea (`docs/offline-origin.md`): the
+  privileged gesture occasionally *rolls* a verify-attempt on a record; most miss, but a
+  **forgery** caught is someone impersonating you (the "identity-theft lottery"), and a
+  **real** hit is fresh corroborating secondary metadata — being asked to sign your own
+  thing is a reward, not a punishment. Antidote could hand Atlases a list of line-items it
+  wants corroborated, disembodied from context. Opportunistic, never a mandatory checkpoint —
+  its shape, and how corroboration feeds the metadata-confidence Antidote otherwise treats
+  fast-and-loose, are open.
 - The **standard-constitution lattice** — the starter set of named, hash-addressed
   constitutions, and where the canonical texts live (`.github`, per the draft-0
   promotion convention?).

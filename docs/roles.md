@@ -71,6 +71,70 @@ Explicitly excluded. The public looks in on **Atlas**, which is already public a
 reports. Antidote keeps signed records for the interested parties; it is not a public
 browsing surface.
 
+## The licensing model — who names it, and what it can't be
+
+Antidote is, concretely, **the repository of solicited licenses.** Atlas and the mesh
+beneath it service something *public*; Antidote is the *private* side that is allowed to
+use the public one's transit — and, because the private side pays, it **funds the public
+side's continuation.** Not extraction: the buyer's money keeps alive the commons that
+carries the buyer's request.
+
+**The gate is *licensed*, not *paid*.** Admission turns on the constitution, never on
+payment (there is no payment check in intake). So a poll can be **commissioned yet free** —
+a public candidate vote wants full cross-constituency aggregation and no one paid for it,
+but it aggregates the moment it carries a constitution it can pass into. Payment is
+orthogonal to admission; it lives in the entitlement ledger, not the door.
+
+**Who writes the license: the originator or the buyer — and the recurring ones become the
+lattice.** We finally let the other party do the one thing that was always theirs to do:
+**write the license they want to name.** An election's originator, a study's commissioner —
+they name outright what the data is for. This resolves the standing question of where the
+standard-constitution lattice comes from: **originators and buyers author licenses (free or
+paid); Antidote curates and lists the ones it will broker; the public fulfills them; the
+recurring ones crystallize into the standard lattice.** Bottom-up, consentful, un-decreed.
+
+**Atlas lists the solicited licenses as want-ads — a market of *intent*, not of data.** This
+is Atlas's final discovery function, made concrete and bidirectional: Antidote posts what
+buyers want to study; the supply side browses the licenses it would like to *fulfill*. It
+inverts surveillance — instead of harvesting everything and hoping, the buyer **publicly
+declares the purpose**, and only those who consent to it supply. Antidote lists *according
+to its own constitutions*, so a rapacious license never even reaches the square; we
+broadcast only demand we are willing to help fulfill.
+
+**Forced on solicited, wildcard everywhere else.** When an Atlas or a Tell makes an ordinary
+poll, it does **not** set the constitution the answers must follow — you license your own
+answers however you like, including the honest refusal *"not usable for anything, buzz
+off"* (someone who answers to make data public but wants none of it aggregated or sold).
+The **one** time the answering client forces a specific license is when you pick up a
+**solicited** poll: give *that* license, or refrain. So the only compelled licensing is
+exactly where it must be, and it guarantees honest licensing on solicited piles **no matter
+what** — the rest of the public spaghetti keeps its signatures, but this is where consent
+is *provably named at the source*, not merely signed.
+
+**Subscribe, never own — and that is a structural fact, not a policy.** A buyer can only
+ever acquire the rights the authors licensed, and the authors granted *use under their
+constitution*, never ownership. A buyer demanding **all rights reserved** is trying to
+reserve rights that were never on offer to anyone — so it is *incoherent*, not merely
+refused: **it doesn't belong to you; you may subscribe.** This is also the foundation of the
+payout: because use is subscribed, **every use is a fresh licensed event = a fresh
+entitlement** accruing to the authors; ownership-stays-with-author is *why* pay-per-use
+works. (The instrument is copyright *plus* contract — thin copyright on expressive
+answers/compilations, the constitution-as-license as contract — and its precise
+enforceability against relabel/resale is the deferred licensing-enforcement research; a
+counsel gate, named so the posture doesn't assume a settled instrument.)
+
+**The license is what separates research from surveillance.** The identical amorphous query
+— *who was in this area at that time* — is **spying** with no license and **science** with
+one. That single gate is what lets the research surface *widen* safely: a sleep study, a
+mobility study, things impossible today because today everyone is treated as an honest agent
+(dangerous at digital scale, as the record shows). Here the license makes an otherwise-creepy
+query **tappable**, and revocation lets a participant walk out of the reporting they dislike.
+
+> **Guard — licensed is not un-redacted.** The license authorizes the *purpose*; the
+> individual-disclosure discipline (coarse standing, the reveal threshold *k*,
+> aggregate-not-individual) still protects the *person*. A licensed amorphous query must
+> never become the de-anonymizer — the purpose is granted, the individual is still masked.
+
 ## The two aggregations — claim vs. derivative
 
 We moved *one* aggregation to Antidote and left *one* on Atlas, and the distinction is the
