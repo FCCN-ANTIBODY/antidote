@@ -368,6 +368,10 @@ the mission self-funding.
 15. **Subscribe, never own.** A buyer acquires only the licensed use the authors granted;
     all-rights-reserved is incoherent. And **licensed is not un-redacted** — the license
     grants the purpose; coarse standing and the reveal threshold still mask the individual.
+16. **Metadata requirements are predicates, proven not disclosed.** A solicited poll may gate
+    on a metadata predicate (a bisect against a condition — constituency is the familiar
+    case); attest the predicate, not the data (coarse on the way in), curated so a
+    de-anonymizing requirement is a nonstarter; over-disclosure stays voluntary, never nudged.
 
 ## The cascade tier — aggregation is Antidote's
 
@@ -410,6 +414,13 @@ claims, in brief:
   (`docs/roles.md`).
 - **The `report` kind** — the exact shape of an archived Atlas free-form report, and the
   charter flag that opts a server into the public-record role.
+- **Temporal bisect over the history log — a new capability, undiscussed until now.** A
+  solicited poll's metadata requirement may be a *temporal* predicate ("resident 5+ years")
+  that **backtraces the chronicle** — a spatio-temporal bisect (the `anecdote.boundary/v1`
+  primitive run over time) proven on-device, result-only out (`docs/roles.md`,
+  `docs/offline-origin.md`). Open: the bisect's exact form; the honest bound (attest what the
+  log supports — a gap is a can't-attest, never a false yes); and the integrity/corroboration
+  tiers a requirement may demand.
 - **Opportunistic self-verification — the metadata-authenticity escape hatch.** We deferred
   judging metadata authenticity at every layer (Atlas shovels it downstream unexamined; here
   at the archive we must decide). A background idea (`docs/offline-origin.md`): the

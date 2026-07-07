@@ -97,6 +97,19 @@ unresolved — the namespace supports it (`docs/teleport.md`'s bundle carries an
 a chronicle is records), and the carve-out is the point: the possibility is held open,
 not specced.
 
+## The chronicle answers metadata predicates — on-device, result-only
+
+A solicited poll may require you to *prove* metadata to qualify (`docs/roles.md`, the
+evidence gate) — and the chronicle is where those predicates are answered. Point-in-time
+predicates bisect once; **temporal predicates backtrace the chain** — "resident 5+ years"
+walks back through the placement entries, and because the log is hash-linked and
+time-ordered, the when-ish is provable. It runs **on-device** — only the predicate *result*
+leaves, never the entries — the same attestation-over-disclosure the whole vault keeps. The
+honest bound: **you attest what the log supports** (a gap is a can't-attest, never a false
+yes), and the log's completeness/corroboration is the attestation's strength. This is why
+keeping a chronicle is *retroactively valuable*: it is your evidence for studies not yet
+written. *(New capability; shape open — `ARCHITECTURE.draft-0.md`.)*
+
 ## The two punches — the server's and the sharer's
 
 The punch has an inverse, and the offline app is where it lives. They are the same

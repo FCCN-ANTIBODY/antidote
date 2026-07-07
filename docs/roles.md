@@ -111,6 +111,49 @@ exactly where it must be, and it guarantees honest licensing on solicited piles 
 what** — the rest of the public spaghetti keeps its signatures, but this is where consent
 is *provably named at the source*, not merely signed.
 
+**Metadata requirements — the evidence gate a solicited poll may name.** A solicited
+commission names *two* things: the license you must **grant** (use) and the metadata you
+must **prove** (admission). Both are visible up front and consented together. This is not
+new in kind — **constituency-limiting a vote is already a metadata requirement** ("attest
+you are in this district"); it generalizes to any predicate: *resident 5+ years, has a
+precise location, slept 6+ hours.* The **chronicle is the evidence source** — the predicate
+is answered **on-device against your own signed history log**, and only the *result* travels
+(`docs/offline-origin.md`). Default posture is **attestation-over-disclosure**, precision as
+a dial the requirement names: *precise / vague / mere-attestation-of-having-precise* — "yes,
+I'm in here and I hold a precise location, without disclosing what it is" (the anecdote
+device-side vouch, generalized). It runs on a **trust gradient** the requirement selects:
+self-attested (the floor — already a real spam filter, since junk can't prove the predicate)
+→ **corroborated** (met-receipts, ambassador sightings, the opportunistic self-verification
+above) for higher-integrity studies. It saves the study its vetting and stops spam because
+the gate is declared and either cleared or not.
+
+**A requirement is a bisect — and it may run over time.** The gate is literally a **bisect**
+(the `anecdote.boundary/v1` primitive, `composer/bisect.mjs`) against the condition:
+in-shape/out, meets-predicate/doesn't. Point-in-time predicates bisect once; **temporal
+predicates backtrace the chronicle** — "resident 5+ years" walks *back* through the history
+log's placement entries, confirming the membership held across the window. The chain is
+hash-linked and time-ordered, so the when-ish is provable: it is the natural substrate for a
+**spatio-temporal bisect**, run on-device, result-only out. The honest bound is a guard of
+its own: **you attest what the log supports, never more** — a gap is a *can't-attest* or a
+coarse answer, never a false yes, and the strength of a temporal attestation is the strength
+of the log's completeness and corroboration. This is why the chronicle is *retroactively
+valuable*: logs are short at launch and temporal predicates weak, but they **strengthen as
+logs age** — your history log is the evidence for studies not yet written, the "know what you
+didn't ask" promise pointed at your own past. *(A new capability, named here for the first
+time; its shape is an open question.)*
+
+Two guards keep the requirement from becoming a harvest:
+
+- **The requirement is governed by the same license and curated by Antidote** — a
+  de-anonymizing fishing requirement is a nonstarter, exactly like all-rights-reserved.
+  *Licensed is not un-redacted* applies to the **input** gate too: demand a predicate
+  wherever a predicate suffices; raw disclosure only when genuinely necessary. Coarse on the
+  way in, coarse on the way out.
+- **"Maybe people can grant more" stays strictly voluntary.** The requirement is a *floor*;
+  over-disclosure is the answerer's opt-in (possibly worth more entitlement), never a nudge —
+  voluntary over-disclosure is consent, but *encouraged* over-disclosure is the harvest
+  pattern wearing a friendly face.
+
 **Subscribe, never own — and that is a structural fact, not a policy.** A buyer can only
 ever acquire the rights the authors licensed, and the authors granted *use under their
 constitution*, never ownership. A buyer demanding **all rights reserved** is trying to
