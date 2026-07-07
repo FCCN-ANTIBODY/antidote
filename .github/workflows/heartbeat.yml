@@ -1,0 +1,23 @@
+name: "Antidote · heartbeat"
+
+# Re-sign the dated receipt over the plaque index. The schedule IS the retention policy
+# (the husk is a heartbeat, not a grant): while this runs, the archive attests "still held,
+# still checked"; stop it, and every copy anyone kept goes visibly stale. Manual plus a
+# monthly floor for now — a chartered server should pick its own cadence.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 5 1 * *"
+
+permissions:
+  contents: write
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/heartbeat
+        with:
+          ledger-key: ${{ secrets.ANTIDOTE_LEDGER_KEY }}

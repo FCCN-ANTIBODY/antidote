@@ -1,0 +1,22 @@
+name: "Antidote · intake door"
+
+# Run the intake door over _data/intake-inbox.json: verify from anyone, dedup, judge each
+# arrival's constitution (admit / queue / refuse), punch cutouts + ledger + ice outbox.
+# Manual for now — the intended trigger is the presumed PR (an intake bundle arriving as a
+# PR whose merge IS the consent), a later slice kept out until the registration path that
+# fills the inbox exists (ARCHITECTURE.draft-0, "registration and the check-in").
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  intake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/intake
+        with:
+          ledger-key: ${{ secrets.ANTIDOTE_LEDGER_KEY }}

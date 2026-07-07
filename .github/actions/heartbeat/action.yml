@@ -1,0 +1,85 @@
+name: "Antidote heartbeat"
+description: >-
+  Re-sign the dated receipt over the plaque index (bin/attest-heartbeat): per bucket, a
+  commitment over its cutouts plus a coarse log-band count — "we hold what opens these,
+  checked as of T, by us." The husk is a heartbeat, not a grant: retiring data is ceasing
+  to attest, so the caller's SCHEDULE is the retention policy — run it on cron and a record
+  stays current; stop, and every copy anyone kept goes visibly stale. Commits the receipt
+  when it changes.
+
+  Reusable the same way as the intake action: a workspace that mounts antidote at
+  .antidote-engine/ can `uses: ./.antidote-engine/.github/actions/heartbeat` on its own
+  schedule. Needs contents:write on the calling repo (the built-in GITHUB_TOKEN).
+
+inputs:
+  charter:
+    description: "Path to the server charter."
+    required: false
+    default: "antidote.yml"
+  index:
+    description: "Directory the plaque index lives under."
+    required: false
+    default: "index"
+  ledger:
+    description: "Path to the intake ledger (its head is bound into the receipt)."
+    required: false
+    default: "ledger/manifest.json"
+  output:
+    description: "Path the signed receipt is written to."
+    required: false
+    default: "heartbeat.json"
+  ledger-key:
+    description: "The ledger signer's private key (base64 pkcs8) — pass the caller's secret. Empty generates a fresh one at the key path (first run only; keep it thereafter)."
+    required: false
+    default: ""
+  publish:
+    description: "Commit + push the receipt and fingerprint when they change."
+    required: false
+    default: "true"
+  git-user-name:
+    description: "Commit author name used when publishing."
+    required: false
+    default: "antidote-heartbeat"
+  git-user-email:
+    description: "Commit author email used when publishing."
+    required: false
+    default: "antidote-heartbeat@users.noreply.github.com"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Seat the ledger signer
+      if: ${{ inputs.ledger-key != '' }}
+      shell: bash
+      env:
+        LEDGER_KEY: ${{ inputs.ledger-key }}
+      run: |
+        set -euo pipefail
+        mkdir -p keys
+        printf '%s\n' "$LEDGER_KEY" > keys/ledger-signer.pk8
+        chmod 600 keys/ledger-signer.pk8
+
+    - name: Re-sign the receipt
+      shell: bash
+      env:
+        ANTIDOTE_SELF: ${{ inputs.charter }}
+        ANTIDOTE_INDEX: ${{ inputs.index }}
+        ANTIDOTE_LEDGER: ${{ inputs.ledger }}
+        ANTIDOTE_HEARTBEAT: ${{ inputs.output }}
+      run: "$GITHUB_ACTION_PATH/../../../bin/attest-heartbeat"
+
+    - name: Publish the receipt if it changed
+      if: ${{ inputs.publish == 'true' }}
+      shell: bash
+      env:
+        OUTPUT: ${{ inputs.output }}
+        GIT_USER_NAME: ${{ inputs.git-user-name }}
+        GIT_USER_EMAIL: ${{ inputs.git-user-email }}
+      run: |
+        set -euo pipefail
+        git add "$OUTPUT" keys/ledger.fpr 2>/dev/null || true
+        if git diff --cached --quiet; then echo "no heartbeat changes"; exit 0; fi
+        git config user.name  "$GIT_USER_NAME"
+        git config user.email "$GIT_USER_EMAIL"
+        git commit -m "heartbeat: re-attest the plaques, checked as of now"
+        git push

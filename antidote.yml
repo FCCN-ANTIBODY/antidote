@@ -1,0 +1,19 @@
+# antidote.yml — this server's charter face: who it is and, above all, WHICH CONSTITUTION IT WEARS.
+#
+# THE RATCHET RULE (ARCHITECTURE.draft-0, guard #2): the constitution is DECLARED here, fixed at
+# charter time, versioned by content hash — never computed from holdings. The gateway
+# (bin/judge-constitution) compares every arrival against this one declaration, so admission can
+# never mutate the license of what is held. Changing this line is re-chartering the server.
+#
+# `constitution` is a content hash over the exact terms (the draft-0 signed-hash convention; the
+# canonical texts live under constitutions/). The placeholder below is the UNCHARTERED value: a
+# server wearing it admits nothing, which is the honest default until a real lattice exists.
+#
+# `stamp_default`: a constitution hash stamped onto arrivals that wear none (recorded as
+# constitution_source: stamped, never passable as worn). Empty = refuse them — no constitution,
+# no catalog (guard #4).
+
+id: antidote
+category: ""            # the label-vocabulary category this bottle collects for (empty = general archive)
+constitution: ""        # UNCHARTERED — set to the content hash of the constitution this server wears
+stamp_default: ""       # empty = bare arrivals are refused
