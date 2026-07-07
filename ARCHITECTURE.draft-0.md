@@ -79,6 +79,33 @@ to build reports and answer licensed reveals.
 > **Invariant — damage is a publication act, never a storage act.** The ruin is inflicted
 > on the public copy only. The ice stays pristine, or the reports die.
 
+## The entity datasets — answers are one slice of several
+
+Antidote is not one archive; it is a store that **slices by entity type.** If it holds
+answers, it already holds a second sliceable dataset for free: the **questions** — public
+polls are durable, sliceable things in their own right. The chronicle (`docs/offline-origin.md`)
+already proved this personally with its `kind` namespace (`answer` / `poll` / `witness` /
+`note`); the server inherits the same shape as multiple datasets over one grammar.
+
+**A poll is an anecdote pointed at an object.** The object is usually text; text usually
+carries multiple-choice options *and* allows custom input; a poll pointed at a non-text
+object may carry no options but still offers custom input behind a filled-in guidance
+field. The gradient runs from *answerable* (options, or genuine open-with-guidance) down
+to **meme-tier** — an *option-less* poll, a statement wearing a question's clothes: you
+are not meant to think anything in particular, you are meant to know what to think.
+
+> **Retention guard — meme-tier is discretionary, never owed.** Neither Atlas nor an
+> antidote server is **obliged** to archive option-less, meme-tier traffic — the most
+> ephemeral kind. Its natural fate is the **share punch** (`docs/offline-origin.md`),
+> person-to-person, content kept and collection-identity voided — not the record.
+> Archiving it is permitted (it might find strange use); it is simply not owed.
+
+**The punch has an inverse.** The plaque punch keeps the envelope and voids the content
+(record-keeping); the **share punch** keeps the content and voids the collection identity
+(hearsay) — the anti-replay credential-clip #88 parked, now homed in the offline app.
+Together they are the honesty rule generalized: *whoever redistributes, damages, and names
+the damage.* Full treatment in `docs/offline-origin.md`.
+
 ## Provenance classes — the bytes decide
 
 Two species of answer, and the plaque's face is **inherited from the artifact's own
@@ -306,6 +333,13 @@ claims, in brief:
 - **The cascade's counsel gate** — the `deeper_constitution` passport at scale
   (`docs/cascade.md`): "deeper overrides a restrictive arrival-COMMON" must queue for
   counsel, never auto-admit; plus shape-catalog provenance and the runoff's retention limits.
+- **Sightings as a dataset** — the mesh-ambassador encounter record (content-id + time, no
+  full content — a reconstruction log of what circulated, not someone else's antidote): its
+  name (`antidote.sighting/v1`? a crunch of `witness`?) and whether it's ever archival or
+  stays personal (`docs/offline-origin.md`).
+- **The two punches, in code** — `voidPunch` (share: keep content, clip the credential,
+  retain the pre-clip `ballotId`) and `crunch` (self-distill: bodies → commitments, spine
+  intact) are specced in `docs/offline-origin.md` but not built.
 - The **standard-constitution lattice** — the starter set of named, hash-addressed
   constitutions, and where the canonical texts live (`.github`, per the draft-0
   promotion convention?).
