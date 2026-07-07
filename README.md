@@ -32,8 +32,12 @@ each importable by its tests:
   attest.
 - **`bin/reveal`** — the public re-insertion check: a cutout is a hole only the held
   original fits.
+- **`bin/egress`** — the teleport's other half ([`docs/teleport.md`](docs/teleport.md)):
+  compose one pile's yield into an `antidote.teleport/v1` bundle governed whole by its
+  COMMON CONSTITUTION, and record custody OUT in the same append-log grammar the intake
+  ledger keeps.
 
-Tests: `node test/intake.test.mjs && node test/heartbeat.test.mjs` (no install step).
+Tests: `for t in test/*.test.mjs; do node "$t"; done` (no install step).
 
 ## The engine paradigm
 
@@ -48,6 +52,11 @@ node's *own* charter and data —
   own schedule. **The schedule is the retention policy**: while it runs, the archive
   attests "still held, still checked"; stop it, and every copy anyone kept goes visibly
   stale.
+- `uses: ./.antidote-engine/.github/actions/egress` — compose a teleport out of one
+  Atlas-managed pile's yield. Deliberately unwired to any workflow until the pile
+  enumeration is specced (the hypothesis lives in [`docs/teleport.md`](docs/teleport.md)).
+- `uses: ./.antidote-engine/.github/actions/advance-engine` — the workspace pin-roller's
+  job for this engine, gated on the test suites (the modules-upgrade pattern).
 
 The workflows in this repo (`intake.yml`, `heartbeat.yml`) are the manual-dispatch forms
 of the same two gestures, the way the Atlas's drop door started.

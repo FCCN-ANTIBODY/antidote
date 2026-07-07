@@ -3,15 +3,20 @@
 //
 //   the plaques — index/<scope|_>/<poll>/<bucket>/<id>.json, one cutout per content-id (the write IS the
 //                 dedup — arrival behavior, as the Atlas's drop-archive). A cutout is the PUNCHED record:
-//                 coordinates + class + constitution, NEVER a signature or respondent key. Mesh-class
-//                 cutouts keep their answer in plaintext (public-in-transit by construction — the
-//                 readable envelope); sealed-class cutouts sit in the "_sealed" bucket, commitment-only
-//                 (their bucketing happens on the ice, and surfaces only as heartbeat bands).
-//                 Buckets are dirs named by the answer's hash prefix, with the value on a face.json —
-//                 free text makes a bad dirname and a fine face.
+//                 THE WHOLE ENVELOPE, verbatim — every changing, esoteric property rides through — with
+//                 exactly the damaged fields punched out (the denylist bin/intake-verify applied: mesh
+//                 loses the respondent's credential, sealed loses the ciphertext) and the punch itself
+//                 named on the face (`punched: [...]` — ownership of the damage). Mesh-class cutouts
+//                 keep their answer in plaintext (public-in-transit by construction — the readable
+//                 envelope); sealed-class cutouts sit in the "_sealed" bucket, commitment-only (their
+//                 bucketing happens on the ice, and surfaces only as heartbeat bands). Buckets are dirs
+//                 named by the answer's hash prefix, with the value on a face.json — free text makes a
+//                 bad dirname and a fine face.
 //   the ledger  — ledger/manifest.json, the append log proper: one hash-linked entry per punch recording
 //                 the CUSTODY TRANSFER (who flushed what, when), head attested by the ledger signer.
-//                 The PR queue and the provenance chain are the same object.
+//                 The PR queue and the provenance chain are the same object. A teleport's IN entry
+//                 carries the bundle's digest, binding it to the OUT entry on the sender's egress
+//                 ledger (docs/teleport.md).
 //   the ice     — admitted RAW records staged to ice-outbox.json for delivery to the ice pile. The ice is
 //                 an ordinary data-pile (pile-new --keygen, no keeper deviations — guard #7), NOT this
 //                 repo; this seam is where the two meet. Damage is a publication act, never a storage
@@ -29,19 +34,19 @@ import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 import { contentId, attest, loadOrCreateSigner, readJson } from "./attest.mjs";
+import { isSealed } from "./intake-verify.mjs";
 
 export const SEALED_BUCKET = "_sealed";
 export async function bucketOf(fate) {
   if (fate.class !== "mesh") return SEALED_BUCKET;
-  return (await contentId(fate.answer)).replace(/^sha256:/, "").slice(0, 16);
+  return (await contentId(fate.envelope.answer)).replace(/^sha256:/, "").slice(0, 16);
 }
 
-// one punched cutout — what the public face holds forever. No sig, no key, no respondent anything.
+// one punched cutout — what the public face holds forever: the whole frame, holes named.
 export function cutout(fate, at) {
-  const { id, class: cls, pile, poll, scope, ts, answer, constitution, constitution_source } = fate;
-  return { schema: "antidote.cutout/v1", id, class: cls, pile, poll, scope: scope || null, ts: ts || null,
-    constitution, constitution_source, punched_at: at,
-    ...(cls === "mesh" ? { answer } : {}) };
+  const { id, class: cls, constitution, constitution_source, deeper_constitution, punched, envelope } = fate;
+  return { schema: "antidote.cutout/v1", id, class: cls, constitution, constitution_source,
+    ...(deeper_constitution ? { deeper_constitution } : {}), punched, punched_at: at, envelope };
 }
 
 // ---- the driver: fates -> cutouts + ledger entry + ice outbox ---------------------------------------------
@@ -67,7 +72,7 @@ export async function runPunch(root, opts = {}) {
     mkdirSync(dir, { recursive: true });
     if (fate.class === "mesh") {
       const facePath = path.join(dir, "face.json");
-      if (!existsSync(facePath)) writeFileSync(facePath, JSON.stringify({ schema: "antidote.face/v1", answer: fate.answer }, null, 2) + "\n");
+      if (!existsSync(facePath)) writeFileSync(facePath, JSON.stringify({ schema: "antidote.face/v1", answer: fate.envelope.answer }, null, 2) + "\n");
     }
     const file = path.join(dir, fate.id.replace(/^sha256:/, "") + ".json");
     if (!existsSync(file)) { // arrival behavior: the first write wins, a re-flush is a no-op
@@ -79,16 +84,18 @@ export async function runPunch(root, opts = {}) {
   // the ice: stage the admitted RAW records (unpunched) for delivery to the ice pile.
   const inbox = readJson(inboxPath, []);
   const bundle = Array.isArray(inbox) ? { ballots: inbox } : inbox;
+  const arrivals = bundle.schema === "antidote.teleport/v1" ? (bundle.records || [])
+    : [...(bundle.ballots || []), ...(bundle.sealed || [])];
   const admitted = new Set(admit.map((f) => f.id));
   const raw = [];
-  for (const b of bundle.ballots || []) if (admitted.has(await contentId(b))) raw.push(b);
-  for (const s of bundle.sealed || []) if (admitted.has(s.id)) raw.push(s);
+  for (const rec of arrivals) if (admitted.has(isSealed(rec) ? rec.id : await contentId(rec))) raw.push(rec);
   writeFileSync(iceOutPath, JSON.stringify({ schema: "antidote.ice-outbox/v1", at, from: manifest.from, records: raw }, null, 2) + "\n");
 
   // the ledger: one hash-linked custody entry, head attested by the ledger signer.
   const ledger = readJson(ledgerPath, { schema: "antidote.ledger/v1", entries: [], head: null });
   const prev = ledger.entries[ledger.entries.length - 1] || null;
   const entry = { seq: prev ? prev.seq + 1 : 0, at, from: manifest.from,
+    ...(manifest.teleport ? { teleport: manifest.teleport } : {}),
     admitted: admit.map((f) => f.id).sort(), queued: manifest.fates.queue.length, refused: manifest.fates.refuse.length,
     prev_hash: prev ? prev.this_hash : null };
   entry.this_hash = await contentId(entry);
