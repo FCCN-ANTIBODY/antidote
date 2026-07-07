@@ -1,0 +1,74 @@
+name: Advance antidote pin
+description: >-
+  Rolls the calling workspace's .antidote-engine submodule pin forward to the latest
+  antidote HEAD — but only when that latest HEAD still passes antidote's own test
+  suites cleanly. Fetches the current antidote tip, checks it out in the submodule,
+  and runs the suites; on a clean run the new pin is committed and pushed, on a
+  failure the submodule is reverted to the committed (last-known-good) pin and
+  nothing is written back, so a broken antidote HEAD can never displace the
+  known-good pin. This is antidote's self-hosted mirror of atlas's advance-engine,
+  kept in this repo so a workspace can `uses:` the naturally pinned source version
+  over its submodule path and a fork can drop antidote by deleting one job.
+
+  Runs in the *workspace* context, where antidote is mounted at .antidote-engine —
+  not in antidote's own repo. The gate is the node-stdlib test suites (no install
+  step, the vendorless way), which is why this is simpler than the site-building
+  engines: there is no site to build, only verbs to prove.
+
+runs:
+  using: composite
+  steps:
+    - name: Record last-known-good antidote SHA
+      run: echo "ANTIDOTE_LKG_SHA=$(git -C .antidote-engine rev-parse HEAD)" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Fetch latest antidote tip
+      run: |
+        git -C .antidote-engine fetch origin main
+        echo "ANTIDOTE_LATEST_SHA=$(git -C .antidote-engine rev-parse FETCH_HEAD)" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Advance antidote to latest
+      run: git -C .antidote-engine checkout "$ANTIDOTE_LATEST_SHA"
+      shell: bash
+
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: "22"
+
+    - name: Test antidote at latest (gate)
+      id: gate
+      run: |
+        set -euo pipefail
+        for t in test/*.test.mjs; do node "$t"; done
+      working-directory: .antidote-engine
+      continue-on-error: true
+      shell: bash
+
+    - name: Revert antidote to last-known-good on gate failure
+      if: steps.gate.outcome == 'failure'
+      run: git -C .antidote-engine checkout "$ANTIDOTE_LKG_SHA"
+      shell: bash
+
+    - name: Roll antidote pin forward (only on a clean latest gate)
+      if: steps.gate.outcome == 'success'
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git diff --quiet .antidote-engine || {
+          git add .antidote-engine
+          git commit -m "ci: roll antidote forward to $ANTIDOTE_LATEST_SHA [skip ci]"
+          # Race-safe push: the workspace updater advances engine pins in parallel
+          # jobs that all push to main. Each job stages only its own submodule
+          # path, so a concurrent advance is always a conflict-free rebase. Retry
+          # the push on rejection.
+          pushed=
+          for attempt in 1 2 3 4 5; do
+            if git push origin main; then pushed=1; break; fi
+            git fetch origin main
+            git rebase origin/main || { git rebase --abort; break; }
+          done
+          [ -n "$pushed" ] || { echo "push to main failed after retries" >&2; exit 1; }
+        }
+      shell: bash

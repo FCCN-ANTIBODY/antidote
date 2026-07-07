@@ -3,30 +3,45 @@
 // resolves every arrival into exactly one fate, written as intake.json for bin/punch to consume:
 //
 //   admit   — signature verifies (mesh class) or the commitment is well-formed (sealed class), deduped
-//             by content-id, and the gateway admits its constitution against the server's declaration.
+//             by content-id, and the gateway admits its governing constitution against the server's
+//             declaration.
 //   queue   — a constitution the lattice doesn't know: the arrival waits, human-paced, in
 //             _data/constitution-queue.json. Nothing about it is archived yet.
 //   refuse  — a bad signature, a malformed record, or a lattice-refused / absent constitution
 //             (no constitution, no catalog — unless the charter stamps a default).
 //
+// TWO BUNDLE KINDS, one door:
+//
+//   loose mail — { from?, constitution?, ballots?:[...], sealed?:[...] } or a bare [ ...ballots ]:
+//             hand-carried scraps. The governing constitution resolves worn > bundle > stamped >
+//             refuse, and the source is kept on the fate so a stamped record can never later pass
+//             as a worn one.
+//   teleport — antidote.teleport/v1 (bin/egress's output; docs/teleport.md): one pile's yield leaving
+//             together. THE COMMON CONSTITUTION governs every record in the bundle (source: common) —
+//             the Venn-diagram overlap of what all the captured answers allow. A record's own deeper
+//             constitution is recorded on the fate as deeper_constitution, SUBORDINATE: it can matter
+//             later only inside whatever secondary-use carve-out the COMMON CONSTITUTION makes, and
+//             it never touches admission. The bundle's chained digest is re-derived and must verify
+//             (a tampered teleport is refused whole); records outside the commitments are rejected.
+//
 // PROVENANCE CLASS COMES FROM THE BYTES (guard #3), never from a label:
 //   mesh   — a plaintext anecdote.ballot/v1, ed25519-signed, verify-from-anyone. Public-in-transit by
-//            construction; its plaque may carry the readable envelope.
-//   sealed — { id, env, pile, poll, scope?, ts? }: an age envelope with the content-id OUTSIDE it
+//            construction; its plaque keeps the readable envelope.
+//   sealed — { id, env, pile, poll, ... }: an age envelope with the content-id OUTSIDE it
 //            (sign-then-encrypt, commitment outside — guard #5). We can verify shape, never contents;
 //            its plaque is commitment-only, and the opening lives on the ice.
 //
-// THE CONSTITUTION AN ANSWER WEARS resolves in order: worn (a `constitution` field inside the signed
-// record) > bundle (the flushing Atlas asserts one for the whole flush) > stamped (the charter's
-// stamp_default, recorded as such) > refuse. The source is kept on the fate so a stamped record can
-// never later pass as a worn one.
+// THE ENVELOPE IS THE FRAME. Ballot properties keep changing and growing esoteric corners; the plaque
+// stores the WHOLE envelope with the damaged content punched out, so the punch is a DENYLIST, never a
+// whitelist: everything on the envelope rides through verbatim except exactly the fields the class
+// punches (mesh: the respondent's credential; sealed: the ciphertext). The fate carries the
+// already-punched envelope — intake.json is public, so nothing punched ever sits in it.
 //
 //   bin/intake-verify        # read the inbox, judge, write intake.json (+ grow the constitution queue)
 // Env (ANTIDOTE_* overrides, the code-vs-data split — see .github/actions/intake):
-//   ANTIDOTE_INTAKE_IN   inbox JSON: { from?, constitution?, ballots?:[...], sealed?:[...] }
-//                        or a bare [ ...ballots ]                       (default _data/intake-inbox.json)
-//   ANTIDOTE_INTAKE_OUT  the fate manifest                              (default intake.json)
-//   ANTIDOTE_QUEUE       the human-paced constitution queue             (default _data/constitution-queue.json)
+//   ANTIDOTE_INTAKE_IN   the inbox: loose mail or a teleport bundle    (default _data/intake-inbox.json)
+//   ANTIDOTE_INTAKE_OUT  the fate manifest                             (default intake.json)
+//   ANTIDOTE_QUEUE       the human-paced constitution queue            (default _data/constitution-queue.json)
 //   ANTIDOTE_SELF / ANTIDOTE_LATTICE   as bin/judge-constitution
 
 import { writeFileSync } from "node:fs";
@@ -45,6 +60,15 @@ export function isSealed(s) {
     typeof s.env === "string" && s.env.length > 0 && typeof s.pile === "string" && typeof s.poll === "string";
 }
 
+// what each class punches out of its envelope — the denylist, and the whole of the damage.
+export const PUNCH = { mesh: ["sig"], sealed: ["env"] };
+export function punchEnvelope(record, cls) {
+  const drop = new Set(PUNCH[cls] || []);
+  const envelope = {};
+  for (const [k, v] of Object.entries(record)) if (!drop.has(k) && v !== undefined) envelope[k] = v;
+  return { envelope, punched: [...drop].filter((k) => k in record).sort() };
+}
+
 // ---- the driver: verify -> dedup -> judge -> fates --------------------------------------------------------
 export async function runIntake(root, opts = {}) {
   const at = opts.now || new Date().toISOString();
@@ -57,36 +81,48 @@ export async function runIntake(root, opts = {}) {
   const lattice = readLattice(root);
   const inbox = readJson(inboxPath, []);
   const bundle = Array.isArray(inbox) ? { ballots: inbox } : inbox;
+  const teleport = bundle.schema === "antidote.teleport/v1";
   const from = bundle.from || "carrier";
 
-  // resolve the constitution each arrival wears: worn > bundle > stamped > (absent).
-  const wornBy = (rec) => {
+  // a teleport must verify whole before any record is considered: re-derive the chained digest.
+  let allowed = null; // commitments a teleport admits records against
+  if (teleport) {
+    const expect = await contentId({ seq: bundle.seq, prev_digest: bundle.prev_digest ?? null, commitments: bundle.commitments || [] });
+    if (expect !== bundle.digest) throw new Error(`intake: teleport digest does not verify (${inboxPath}) — refusing the bundle whole`);
+    allowed = new Set(bundle.commitments || []);
+  }
+
+  // the constitution that GOVERNS admission. Loose mail: worn > bundle > stamped > (absent).
+  // A teleport: the COMMON CONSTITUTION, full stop; a worn one is recorded deeper, subordinate.
+  const governs = (rec) => {
+    if (teleport) return { constitution: bundle.common_constitution || null, constitution_source: "common",
+      ...(rec.constitution ? { deeper_constitution: rec.constitution } : {}) };
     if (rec.constitution) return { constitution: rec.constitution, constitution_source: "worn" };
     if (bundle.constitution) return { constitution: bundle.constitution, constitution_source: "bundle" };
     if (charter.stamp) return { constitution: charter.stamp, constitution_source: "stamped" };
     return { constitution: null, constitution_source: "absent" };
   };
 
+  // one stream of arrivals; the bytes decide the class. A teleport carries both kinds in `records`.
+  const arrivals = teleport ? (bundle.records || []) : [...(bundle.ballots || []), ...(bundle.sealed || [])];
   let received = 0, rejected = 0;
-  const seen = new Map(); // id -> fate candidate (arrival-behavior dedup, as the Atlas's drop door)
-  for (const b of bundle.ballots || []) {
+  const seen = new Map(); // id -> fate (arrival-behavior dedup, as the Atlas's drop door)
+  for (const rec of arrivals) {
     received++;
-    if (!isBallot(b) || !(await verifyAttested(b)).ok) { rejected++; continue; }
-    const id = await contentId(b);
-    if (!seen.has(id)) seen.set(id, { id, class: "mesh", pile: b.pile, poll: b.poll,
-      scope: b.scope || null, ts: b.ts, answer: b.answer, ...wornBy(b) });
-  }
-  for (const s of bundle.sealed || []) {
-    received++;
-    if (!isSealed(s)) { rejected++; continue; } // the commitment is outside; contents are not ours to open here
-    if (!seen.has(s.id)) seen.set(s.id, { id: s.id, class: "sealed", pile: s.pile, poll: s.poll,
-      scope: s.scope || null, ts: s.ts || null, ...wornBy(s) });
+    let cls = null, id = null;
+    if (isBallot(rec) && (await verifyAttested(rec)).ok) { cls = "mesh"; id = await contentId(rec); }
+    else if (isSealed(rec)) { cls = "sealed"; id = rec.id; } // the commitment is outside; contents are not ours to open here
+    if (!cls || (allowed && !allowed.has(id))) { rejected++; continue; } // a record outside its teleport's commitments is nobody's
+    if (seen.has(id)) continue;
+    const { envelope, punched } = punchEnvelope(rec, cls);
+    seen.set(id, { id, class: cls, pile: rec.pile, poll: rec.poll, scope: rec.scope || null,
+      ...governs(rec), punched, envelope });
   }
 
   const admit = [], queue = [], refuse = [];
   for (const fate of seen.values()) {
     const verdict = judgeConstitution({ answer: fate.constitution, server: charter.constitution, lattice });
-    const { answer, ...brief } = fate; // only ADMITTED fates keep their answer (bin/punch buckets by it)
+    const { envelope, punched, ...brief } = fate; // only ADMITTED fates keep their envelope (bin/punch files it)
     if (verdict === "admit") admit.push(fate);
     else if (verdict === "queue") queue.push(brief);
     else refuse.push({ ...brief, reason: fate.constitution ? "lattice refuses" : "no constitution, no catalog" });
@@ -103,6 +139,7 @@ export async function runIntake(root, opts = {}) {
 
   const manifest = {
     schema: "antidote.intake/v1", self: charter.id, constitution: charter.constitution, from, at,
+    ...(teleport ? { teleport: { pile: bundle.pile, seq: bundle.seq, digest: bundle.digest } } : {}),
     received, rejected, kept: seen.size,
     fates: { admit, queue, refuse },
   };

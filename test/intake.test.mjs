@@ -68,7 +68,7 @@ function scratch({ inbox = {}, stamp = "", lattice } = {}) {
   const lattice = { permits: { [OTHER]: [S] }, refuses: {} };
   const dir = scratch({ inbox: { from: "colorado", constitution: S, ballots: [worn, bare] }, lattice });
   const { manifest } = await runIntake(dir, { now: NOW });
-  const src = Object.fromEntries(manifest.fates.admit.map((f) => [f.answer, [f.constitution, f.constitution_source]]));
+  const src = Object.fromEntries(manifest.fates.admit.map((f) => [f.envelope.answer, [f.constitution, f.constitution_source]]));
   ok(src.Worn?.[0] === OTHER && src.Worn?.[1] === "worn", "a worn constitution outranks the bundle's");
   ok(src.Bare?.[0] === S && src.Bare?.[1] === "bundle", "a bare record wears the bundle's assertion");
 }
@@ -95,22 +95,25 @@ function scratch({ inbox = {}, stamp = "", lattice } = {}) {
   ok(punched.length === 0, "nothing queued is punched");
 }
 
-// 6. punch: cutouts land content-addressed per bucket; the cutout is PUNCHED (no sig, no key).
+// 6. punch: cutouts land content-addressed per bucket; the cutout is THE WHOLE ENVELOPE, holes named.
 {
-  const keep = await ballot();
+  const keep = await ballot({ hue: "cerulean" }); // an esoteric envelope property — the frame keeps growing
   const cut = await ballot({ answer: "Cut" });
   const dir = scratch({ inbox: { from: "colorado", constitution: S, ballots: [keep, cut], sealed: [sealed()] } });
   await runIntake(dir, { now: NOW });
   const { punched, entry } = await runPunch(dir, { now: NOW });
   ok(punched.length === 3, "three cutouts punched");
-  const keepBucket = await bucketOf({ class: "mesh", answer: "Keep" });
+  const keepBucket = await bucketOf({ class: "mesh", envelope: { answer: "Keep" } });
   const keepPath = path.join(dir, "index/colorado/budget", keepBucket, (await contentId(keep)).replace(/^sha256:/, "") + ".json");
   ok(existsSync(keepPath), "a mesh cutout lands at index/<scope>/<poll>/<bucket>/<id>.json");
   const c = JSON.parse(readFileSync(keepPath, "utf8"));
-  ok(!c.sig && c.answer === "Keep" && c.class === "mesh", "the cutout keeps the readable envelope and NOTHING of the respondent");
+  ok(!c.envelope.sig && c.envelope.answer === "Keep" && c.class === "mesh", "the cutout keeps the readable envelope and NOTHING of the respondent");
+  ok(c.envelope.hue === "cerulean", "an esoteric envelope property rides through verbatim — the punch is a denylist, never a whitelist");
+  ok(JSON.stringify(c.punched) === JSON.stringify(["sig"]), "the damage is named on the face — ownership of the redaction");
   const face = JSON.parse(readFileSync(path.join(dir, "index/colorado/budget", keepBucket, "face.json"), "utf8"));
   ok(face.answer === "Keep", "the bucket's face names its value");
-  ok(existsSync(path.join(dir, "index/colorado/budget", SEALED_BUCKET, "a".repeat(64) + ".json")), "a sealed cutout sits commitment-only in _sealed");
+  const sealedCut = JSON.parse(readFileSync(path.join(dir, "index/colorado/budget", SEALED_BUCKET, "a".repeat(64) + ".json"), "utf8"));
+  ok(!sealedCut.envelope.env && JSON.stringify(sealedCut.punched) === JSON.stringify(["env"]), "a sealed cutout sits commitment-only in _sealed: ciphertext punched, envelope kept");
   ok(entry.admitted.length === 3 && entry.prev_hash === null, "the first ledger entry roots the chain");
 }
 

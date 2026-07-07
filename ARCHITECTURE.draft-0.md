@@ -54,7 +54,12 @@ shadow question stays findable — re-publication is the point, per #91):
 - the set of **unique answer values** — the buckets;
 - the **cutouts** — one file per content-id, filename is the hash, so dedup is arrival
   behavior and concurrent PRs from many Atlases converge without conflict. Each cutout is
-  a hole only the held original fits: verification is re-insertion (`bin/prove`);
+  a hole only the held original fits: verification is re-insertion (`bin/prove`). **The
+  envelope is the frame**: ballot properties keep changing and growing esoteric corners,
+  so a cutout keeps the *whole envelope* verbatim with exactly the damaged fields punched
+  out and the holes named on its face (`punched: [...]` — ownership of the damage). The
+  punch is a denylist, never a whitelist; a property nobody has invented yet archives
+  correctly today;
 - **committed bucketing** — a per-bucket commitment (Merkle root over that bucket's
   cutouts) plus a **coarse count band**, never the exact figure on the face. Exact
   membership is revealable on demand. Coarse standing on the plaque; correct-and-real
@@ -135,6 +140,18 @@ One object does four jobs: **the constitution hash is the shard key, the routing
 server's type, and the license.** This is `ANTIDOTE.draft-0.md`'s "the name is the
 license," made architectural — a server is knowable by the constitution it wears.
 
+**THE COMMON CONSTITUTION** (a proper noun, all caps wherever it appears): when a
+question yields its answers out of the data pile that captured them, the yield travels
+under the Venn-diagram overlap of what all those answers allow — the composite,
+greatest-common-denominator constitution that governs them all. On a teleport
+(`docs/teleport.md`) THE COMMON CONSTITUTION is what the bundle wears and what the
+gateway judges, full stop. An answer's own **deeper constitution** rides along
+*subordinate*: it is recorded on the fate and the cutout (`deeper_constitution`), and it
+can matter later only inside whatever secondary-use carve-out THE COMMON CONSTITUTION
+makes — within the limits its author originally wrote, never beyond either. It never
+touches admission. Loose mail (scraps, not a pile's yield) keeps the
+worn > bundle > stamped ladder.
+
 **The lattice and the queue.** Constitution comparison is not machine-decidable in
 general, and a wrong "compatible" verdict is a license violation baked into the archive.
 Two existing shapes absorb this:
@@ -176,7 +193,9 @@ work on the party trying to initiate something:
    advertises.
 2. **The flush is Atlas-initiated** — the presumed PR of #91, carrying the sendable
    bundle (`data-pile/docs/transfer.md` §C): self-verifying, sealed to Antidote's
-   recipient, commitments outside.
+   recipient, commitments outside. Specced as `antidote.teleport/v1` — the wire shape,
+   the two custody ledgers it binds, and THE COMMON CONSTITUTION it travels under are
+   `docs/teleport.md`.
 3. **Antidote's shed offer is a response, never a solicitation.** After merge + signed
    receipt, Antidote may open the companion PR back against the Atlas, replacing the
    archived files with a tombstone pointer: *held by Antidote as of T, receipt signed.*

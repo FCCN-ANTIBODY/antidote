@@ -1,0 +1,99 @@
+name: "Antidote egress"
+description: >-
+  Run the teleport's egress half (bin/egress) over one Atlas-managed pile's decrypted
+  yield: dedup by commitment, compose the antidote.teleport/v1 bundle (records + sorted
+  commitments + chained digest, governed whole by the pile's COMMON CONSTITUTION), and
+  extend the egress ledger — custody OUT, in the same append-log grammar the receiving
+  server's intake ledger keeps (docs/teleport.md). Commits the ledger when it changes;
+  the bundle itself is NOT committed here — it is the presumed PR's payload, and opening
+  that PR against the receiving Antidote server is its own gesture with its own consent
+  (the check-in method: work rides with the initiator).
+
+  Deliberately not wired to any workflow yet: enumeration of the Atlas-managed piles is
+  a hypothesis, not a spec (docs/teleport.md "Which piles teleport"). A workspace that
+  mounts antidote at .antidote-engine/ will `uses:
+  ./.antidote-engine/.github/actions/egress` from its digest workflow once the
+  enumeration lands. Needs contents:write on the calling repo (the built-in GITHUB_TOKEN).
+
+inputs:
+  records:
+    description: "The pile yield JSON — { pile, common_constitution, records:[...] } or a bare [ ...records ]."
+    required: false
+    default: "_data/egress-records.json"
+  pile:
+    description: "Pile id, when the yield is a bare array."
+    required: false
+    default: ""
+  common-constitution:
+    description: "THE COMMON CONSTITUTION's hash, when the yield is a bare array."
+    required: false
+    default: ""
+  charter:
+    description: "Path to the server charter (names `from` on the bundle)."
+    required: false
+    default: "antidote.yml"
+  teleport:
+    description: "Path the sendable bundle is written to (uncommitted — the presumed PR's payload)."
+    required: false
+    default: "teleport.json"
+  ledger:
+    description: "Path to the egress ledger (custody OUT)."
+    required: false
+    default: "egress/ledger.json"
+  egress-key:
+    description: "The egress signer's private key (base64 pkcs8) — pass the caller's secret. Empty generates a fresh one at the key path (first run only; keep it thereafter)."
+    required: false
+    default: ""
+  publish:
+    description: "Commit + push the egress ledger and fingerprint when they change."
+    required: false
+    default: "true"
+  git-user-name:
+    description: "Commit author name used when publishing."
+    required: false
+    default: "antidote-egress"
+  git-user-email:
+    description: "Commit author email used when publishing."
+    required: false
+    default: "antidote-egress@users.noreply.github.com"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Seat the egress signer
+      if: ${{ inputs.egress-key != '' }}
+      shell: bash
+      env:
+        EGRESS_KEY: ${{ inputs.egress-key }}
+      run: |
+        set -euo pipefail
+        mkdir -p keys
+        printf '%s\n' "$EGRESS_KEY" > keys/egress-signer.pk8
+        chmod 600 keys/egress-signer.pk8
+
+    - name: Compose the teleport
+      shell: bash
+      env:
+        ANTIDOTE_EGRESS_IN: ${{ inputs.records }}
+        ANTIDOTE_PILE: ${{ inputs.pile }}
+        ANTIDOTE_COMMON: ${{ inputs.common-constitution }}
+        ANTIDOTE_SELF: ${{ inputs.charter }}
+        ANTIDOTE_TELEPORT_OUT: ${{ inputs.teleport }}
+        ANTIDOTE_EGRESS_LEDGER: ${{ inputs.ledger }}
+      run: "$GITHUB_ACTION_PATH/../../../bin/egress"
+
+    - name: Publish the egress ledger if it changed
+      if: ${{ inputs.publish == 'true' }}
+      shell: bash
+      env:
+        LEDGER: ${{ inputs.ledger }}
+        GIT_USER_NAME: ${{ inputs.git-user-name }}
+        GIT_USER_EMAIL: ${{ inputs.git-user-email }}
+      run: |
+        set -euo pipefail
+        git add "$LEDGER" keys/egress.fpr 2>/dev/null || true
+        if git diff --cached --quiet; then echo "no egress changes"; exit 0; fi
+        git config user.name  "$GIT_USER_NAME"
+        git config user.email "$GIT_USER_EMAIL"
+        git commit -m "egress: record custody out — the teleport rides its own PR"
+        git push
