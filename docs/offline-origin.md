@@ -97,6 +97,19 @@ unresolved — the namespace supports it (`docs/teleport.md`'s bundle carries an
 a chronicle is records), and the carve-out is the point: the possibility is held open,
 not specced.
 
+## The chronicle answers metadata predicates — on-device, result-only
+
+A solicited poll may require you to *prove* metadata to qualify (`docs/roles.md`, the
+evidence gate) — and the chronicle is where those predicates are answered. Point-in-time
+predicates bisect once; **temporal predicates backtrace the chain** — "resident 5+ years"
+walks back through the placement entries, and because the log is hash-linked and
+time-ordered, the when-ish is provable. It runs **on-device** — only the predicate *result*
+leaves, never the entries — the same attestation-over-disclosure the whole vault keeps. The
+honest bound: **you attest what the log supports** (a gap is a can't-attest, never a false
+yes), and the log's completeness/corroboration is the attestation's strength. This is why
+keeping a chronicle is *retroactively valuable*: it is your evidence for studies not yet
+written. *(New capability; shape open — `ARCHITECTURE.draft-0.md`.)*
+
 ## The two punches — the server's and the sharer's
 
 The punch has an inverse, and the offline app is where it lives. They are the same
@@ -168,6 +181,15 @@ can't show what it said.
 - **The share punch, in code** — `voidPunch` (keep content, clip the credential, retain the
   pre-clip `ballotId`) and `crunch` (bodies → commitments, spine intact) are named here but
   not yet built; the vault is their home when they land.
+- **Opportunistic self-verification (the identity-theft lottery).** One of the things the
+  privileged gesture *rolls* could be a **verify-attempt on a random record** — Antidote may
+  even hand out a list of line-items it wants corroborated. Most rolls miss; but a **forgery**
+  hit means someone is failing to impersonate you (a security signal you get for free by
+  always trying to verify yourself), and a **real** hit is fresh corroborating metadata — and
+  being asked to sign your own thing is a reward, not a punishment. It's the archive's escape
+  hatch for the metadata-authenticity it otherwise treats fast-and-loose (`ARCHITECTURE.draft-0.md`
+  open questions). Opportunistic, never a mandatory checkpoint; not the thing you come here to
+  find out. Shape TBD.
 
 ## See also
 

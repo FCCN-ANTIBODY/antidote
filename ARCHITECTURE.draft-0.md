@@ -106,6 +106,19 @@ are not meant to think anything in particular, you are meant to know what to thi
 Together they are the honesty rule generalized: *whoever redistributes, damages, and names
 the damage.* Full treatment in `docs/offline-origin.md`.
 
+**A fourth kind — `report`, the public record.** An Atlas's own **free-form aggregation**
+(label-based, discretionary, editorial — the ambiguous grouping Atlas was always going to
+do, as distinct from the cascade's shape-governed distillation) emits **signed claims about
+what it saw** — reports. Antidote can archive these as a `report`-kind dataset through the
+same intake grammar: opt-in per charter, the archival twin of the runoff tray (the runoff
+holds unasked-for *answers*; the report archive holds publicly-made *claims* — the record of
+what was said, when, powering the diff/fracture-tracking of #95). **Archived as a claim,
+never distilled as data** (Atlas reports are not license-governed distillate; they never
+enter the cascade), and archiving is not publishing (publicity stays the Atlas's choice —
+Antidote keeps the record so a fracture is *provable*, not to browse). The seam that keeps
+the two aggregations apart is **claim vs. derivative**: Atlas groups-and-claims, Antidote
+distills. See `docs/roles.md`.
+
 ## Provenance classes — the bytes decide
 
 Two species of answer, and the plaque's face is **inherited from the artifact's own
@@ -190,6 +203,20 @@ Two existing shapes absorb this:
   seen and consented to, human-paced. The judge automates the known lattice; the queue
   absorbs everything else. A fuzzy judgment is never the sole gate.
 
+**Where the lattice comes from — the licensing model** (`docs/roles.md`). The originator or
+buyer **writes the license they want to name** (free or paid — the gate is *licensed*, not
+*paid*); Antidote curates and lists the ones it will broker (Atlas carries them as want-ads,
+a market of intent); the recurring ones crystallize into the standard lattice, bottom-up.
+The answering client **forces the solicited license only on solicited polls** — everywhere
+else you keep a wildcard, including the honest *"not usable for anything"* refusal — so
+consent is *provably named at the source* exactly where it must be. And a buyer may
+**subscribe, never own**: all-rights-reserved is *incoherent* (you can't reserve rights the
+authors never granted), which is both the anti-enclosure line and the foundation of the
+per-use entitlement. **The license separates research from surveillance** — the same
+amorphous query is spying unlicensed and science licensed — which is what lets the research
+surface widen safely, *provided* the individual-disclosure discipline still masks the person
+(licensed is not un-redacted).
+
 ## The antidote bottle — the demand side
 
 The same architecture runs in reverse as a commissioning instrument. A buyer — a
@@ -256,7 +283,7 @@ the **collapse factor** per bucket (sightings per unique ballot). It reconciles 
 Atlas-local figures against the canon in public, and it doubles as mesh telemetry — how
 far a question traveled is itself something a buyer of civic data wants to know.
 
-## Revocation — the plaque erodes
+## Revocation — the plaque erodes, and the cascade carries it
 
 Answers wear constitutions; nonces are revocable; people change their minds. Antidote
 **consumes a revocation feed** — signed claims-about-a-subject, check-fetched, the same
@@ -264,6 +291,29 @@ shape as the breach-notice feed — and the heartbeat supplies the mechanism: **
 attest that cutout** in the next re-signing. The plaque erodes rather than vanishes.
 Reports carry the date-stamp discipline: a sold report was licensed **as of its
 signature date**; later revocations shape later reports, never sold ones.
+
+**Revocation is revoke-once, cascade-down — the data-broker asymmetry inverted.** Today you
+chase every holder; even a willing void has to travel the gravel. Here the **nonce-holder
+signs one revocation** against the content-id and hands it to Antidote *once*; the
+**cascade propagates it downward on the heartbeat windows** — each vat carrying the
+content-id ceases to attest it on its next re-sign. Not deletion (copies can't be forced
+gone — honest); cease-to-attest, and **verifiable** because the revocation is signed by the
+same key that signed the original. It is the *same content-id operation* as the verification
+API below, run for the opposite reason.
+
+## Antidote as a verification API — the present receipt
+
+By **content-id search**, a constituent can prove *their answer went public, and where* —
+the affirmative twin of the enforcement substrate (`ANTIDOTE.draft-0.md`: a *missing*
+receipt is the tell of stolen consent; this is the *present* receipt). Because the
+constituent holds their own content-ids in their chronicle (`docs/offline-origin.md`), the
+query needs no one tracked down. And **the entitlement ledger mirrors it exactly**: every
+place a content-id surfaces in a used/sold report is a place its author is owed a share —
+verify-where and paid-for-where are one index viewed twice. Antidote holds **entitlements,
+not custody**: earmarked claims / vouchers (stuff that, if picked up, is worth something),
+never the payor's funds; fingerprint-gated pickup; it tracks who is owed what and transmits
+nothing (the #88 payout model — safe in the product because it is a ledger, not a bank).
+The full loop of parties this serves is `docs/roles.md`.
 
 ## The long-term waiting room — pay me for what you use
 
@@ -305,6 +355,23 @@ the mission self-funding.
    the queue consents.
 10. **Antidote never reaches out first.** Registration, flush, reveal, commission — the
     initiator carries the work.
+11. **Claim vs. derivative.** Antidote *distills* license-governed answers into datasets;
+    it only *archives* Atlas's free-form reports as signed claims. Reports never enter the
+    cascade as data.
+12. **Entitlement, not custody.** Antidote holds owed-share vouchers, never the payor's
+    funds; it tracks and transmits nothing.
+13. **Antidote is not for the public watchers.** It serves the constituent (verify + get
+    paid), the seeker, and the operator; public looking-in is Atlas's role (`docs/roles.md`).
+14. **Licensed, not paid.** The gate is the constitution; payment is orthogonal. A commission
+    may be free; the license is authored by the originator/buyer, forced only on solicited
+    polls, wildcard otherwise.
+15. **Subscribe, never own.** A buyer acquires only the licensed use the authors granted;
+    all-rights-reserved is incoherent. And **licensed is not un-redacted** — the license
+    grants the purpose; coarse standing and the reveal threshold still mask the individual.
+16. **Metadata requirements are predicates, proven not disclosed.** A solicited poll may gate
+    on a metadata predicate (a bisect against a condition — constituency is the familiar
+    case); attest the predicate, not the data (coarse on the way in), curated so a
+    de-anonymizing requirement is a nonstarter; over-disclosure stays voluntary, never nudged.
 
 ## The cascade tier — aggregation is Antidote's
 
@@ -340,6 +407,30 @@ claims, in brief:
 - **The two punches, in code** — `voidPunch` (share: keep content, clip the credential,
   retain the pre-clip `ballotId`) and `crunch` (self-distill: bodies → commitments, spine
   intact) are specced in `docs/offline-origin.md` but not built.
+- **Revocation-cascade timing + the verification API shape** — the heartbeat-window cadence
+  a revocation rides down the cascade; the content-id search interface (and its access
+  gating — a constituent proving nonce-holdership to query their own reach); how the
+  entitlement ledger is derived from and stays consistent with revocations
+  (`docs/roles.md`).
+- **The `report` kind** — the exact shape of an archived Atlas free-form report, and the
+  charter flag that opts a server into the public-record role.
+- **Temporal bisect over the history log — a new capability, undiscussed until now.** A
+  solicited poll's metadata requirement may be a *temporal* predicate ("resident 5+ years")
+  that **backtraces the chronicle** — a spatio-temporal bisect (the `anecdote.boundary/v1`
+  primitive run over time) proven on-device, result-only out (`docs/roles.md`,
+  `docs/offline-origin.md`). Open: the bisect's exact form; the honest bound (attest what the
+  log supports — a gap is a can't-attest, never a false yes); and the integrity/corroboration
+  tiers a requirement may demand.
+- **Opportunistic self-verification — the metadata-authenticity escape hatch.** We deferred
+  judging metadata authenticity at every layer (Atlas shovels it downstream unexamined; here
+  at the archive we must decide). A background idea (`docs/offline-origin.md`): the
+  privileged gesture occasionally *rolls* a verify-attempt on a record; most miss, but a
+  **forgery** caught is someone impersonating you (the "identity-theft lottery"), and a
+  **real** hit is fresh corroborating secondary metadata — being asked to sign your own
+  thing is a reward, not a punishment. Antidote could hand Atlases a list of line-items it
+  wants corroborated, disembodied from context. Opportunistic, never a mandatory checkpoint —
+  its shape, and how corroboration feeds the metadata-confidence Antidote otherwise treats
+  fast-and-loose, are open.
 - The **standard-constitution lattice** — the starter set of named, hash-addressed
   constitutions, and where the canonical texts live (`.github`, per the draft-0
   promotion convention?).
@@ -361,7 +452,8 @@ claims, in brief:
   PR; sharding by respondent), **#86/#87** (the ballot door; fronted polls), **#94** (the
   cascade tier — containment distillation; `docs/cascade.md` is its in-repo home).
 - `civic-node/ANTIDOTE.draft-0.md` (the name is the license; the queue; sheltering, not
-  harvesting), `NONPROFIT.draft-0.md` (anti-capture as architecture).
+  harvesting; the money layer / entitlement model), `NONPROFIT.draft-0.md` (anti-capture as
+  architecture), `docs/roles.md` (the full loop — who Antidote serves, and who it doesn't).
 - `data-pile/CONTRACT.md` (the encrypted append log; ratchet; `bin/prove`),
   `docs/transfer.md` (the sendable bundle; clear-a-space; librarian layering),
   `docs/lifecycle.md` (Live → Sealed → Disclosed).
