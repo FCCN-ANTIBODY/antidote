@@ -97,6 +97,54 @@ unresolved — the namespace supports it (`docs/teleport.md`'s bundle carries an
 a chronicle is records), and the carve-out is the point: the possibility is held open,
 not specced.
 
+## The two punches — the server's and the sharer's
+
+The punch has an inverse, and the offline app is where it lives. They are the same
+gesture run in opposite directions, and each keeps exactly what the other drops:
+
+- **The server punch** (`bin/punch`, the plaque) keeps the **envelope** and voids the
+  **content** — the respondent's credential is removed, the frame is kept, damage is a
+  publication act, the ice keeps the whole. *Prove it's real; hide what it said.* For
+  record-keeping.
+- **The share punch** (offline, person-to-person) keeps the **content** and voids the
+  **collection identity** — you redistribute the words, but the circulating copy carries a
+  **voided signature** (the valid one punched out and kept by you), so it can never be
+  re-turned-in as a fresh ballot or re-aggregated as evidence. *Say the thing; disclaim it
+  as evidence.* For hearsay.
+
+The symmetry is the honesty rule generalized: **whoever redistributes, damages, and names
+the damage.** The server names its redaction (`punched: [...]`); the sharer names its void.
+Unsigned, un-punched redistribution is the dishonest path either way.
+
+This **activates the anti-replay credential-clip parked on #88** (the husk comment: "punch
+the sig/tok so a ballot can't be replayed live… a separate anti-replay tool for another
+day; keep the pre-clip `ballotId` as the dedup key so duplicates still collapse"). #88
+named two opposite punches — redact-content-keep-commitment (the husk) and
+keep-content-void-credential (the clip) — and shelved the second; it is the share punch.
+Its inherited rule stands: **keep the pre-clip `ballotId`** so a shared meme still collapses
+against its origin if it ever meets one.
+
+**Why this is the right home for meme-tier traffic.** A poll is an anecdote pointed at an
+object; an *option-less* one is a statement wearing a question's clothes ("you're not
+supposed to think anything in particular — you're supposed to know what to think"). It is
+the most ephemeral traffic, and neither Atlas nor an antidote server is **obliged** to
+archive it. Its natural fate is exactly this: **you**, on your own phone, do the damaging
+step and share it as the cheapest hearsay — content kept, collection identity voided. The
+evidence path (answerable polls) flows to the archive; the meme path flows person-to-person
+through the share punch. (Nothing forbids archiving an option-less response — it might find
+strange use — it simply isn't owed to the record.)
+
+## Crunch to evidence — self-distillation on your own schedule
+
+The offline antidote is the **historical log the user's own tools flush to**, and it
+distills the same way the servers do — except **you** decide when. A **crunch** replaces
+entry bodies with their commitments: the hash-chain and the head stay intact and
+verifiable (the spine still proves the sequence and the when-ish), but the content is gone
+— *a log, but no more content.* It is the personal twin of the archive-and-reset gesture,
+and of "damage is a publication act": you keep proof you held it, you shed the weight, on
+your own preference and cadence. What you crunch, you can still prove happened; you just
+can't show what it said.
+
 ## Open questions
 
 - **The name** — the canonical domain (TLD vs `antidote.anecdote.channel`), and the
@@ -110,6 +158,16 @@ not specced.
 - **The destruct gesture** — anecdote's `destruct.html` spares the trove; the vault
   needs the same escape hatch with the same two-keys separation (shred the identity,
   spare the chronicle, or both).
+- **Sightings — where do they belong?** *(the memo's open question, given a home here)*
+  A mesh ambassador socializes things found on an Atlas. Do those belong in an antidote at
+  all? The likely shape is **not** "someone else's antidote" but a thin **encounter record**
+  — `witness`-kind, content-id + time, *no full content* — an after-the-fact
+  **reconstruction log of sightings** you could turn in that way. It's the boundary case of
+  "when does circulating become archival," and it wants a name (an `antidote.sighting/v1`?
+  a crunch mode of `witness`?) before it's specced. Held open, with a home.
+- **The share punch, in code** — `voidPunch` (keep content, clip the credential, retain the
+  pre-clip `ballotId`) and `crunch` (bodies → commitments, spine intact) are named here but
+  not yet built; the vault is their home when they land.
 
 ## See also
 
