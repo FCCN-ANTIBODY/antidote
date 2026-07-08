@@ -136,7 +136,13 @@ the last step, and by then they already know exactly what they're buying.
 2. `index.html` grows the three-door strip (chronicle · bottle · shelf) — light touch.
 3. The shelf: needs the advertising/socialization surface (#95) — seeds exist (coverage.json,
    the heartbeat, the plaque index); estimates need an archive query in bands.
-4. The handoff: Antidote-iframes-Tell with the constitution field forced (couples the Floor,
-   anecdote#93, and Tell's embed params).
+4. The handoff *(built)*: Antidote-iframes-Tell with the constitution field forced (couples the
+   Floor, anecdote#93, and Tell's embed params). `bottle.html` builds a vanilla-Tell URL from the
+   live hash — pile/poll/q display grammar, the constitution FORCED and always present, never a
+   credential — and iframes Tell only on the operator's "preview" click (the sole network the page
+   makes). Tell forwards the query verbatim to anecdote, so the terms ride unbroken; its preview
+   branch surfaces the forced law even tokenless; the Floor's `tellSrc` carries a question's
+   constitution too. Driven in real Chromium: page hash == node sha256, forced-exact bytes, no
+   network before the click, a changed comma re-points the live frame to the new bottle.
 5. The fill-vs-limit judge semantics: how a woven question list is annotated in the lattice so
    `judgeConstitution` comparisons can use it (couples the labeling commons, civic-node#80).
