@@ -161,6 +161,30 @@ const dir = await server(ballots);
   ok(/no COMMON/.test(threw), "a rung offering no constitution receives nothing — no constitution, no catalog");
 }
 
+// 9. no silent gaps: coverage names who claims what — and the hole nobody asked for.
+{
+  const { runCoverage } = await import("../bin/coverage.mjs");
+  // with only the colorado rung in view (no vats), the wyoming-spine placement is claimed by NOBODY.
+  const noVats = path.join(dir, "no-vats");
+  const r = await runCoverage(dir, { now: NOW, vatsDir: noVats });
+  const cheyenne = r.holes.find((h) => h.shape === "cheyenne-city");
+  ok(!!cheyenne && cheyenne.placements === "1-9" && cheyenne.constitutions.includes(C3),
+    "the shape nobody asked for is a NAMED hole — placements banded, constitutions stapled");
+  ok(r.held.find((h) => h.shape === "fort-collins")?.claimed_by.some((c) => c.kind === "rung"),
+    "a rung's containment claim covers its spine");
+  // and once the lateral cd04 vat (overlaps larimer + wyoming) is in view, cheyenne IS asked for:
+  // materializing a view is claiming the coverage — the hole closes visibly, not by assumption.
+  const r2 = await runCoverage(dir, { now: NOW });
+  ok(!r2.holes.some((h) => h.shape === "cheyenne-city") &&
+     r2.held.find((h) => h.shape === "cheyenne-city")?.claimed_by.some((c) => c.kind === "vat" && c.shape === "cd04"),
+    "the cd04 overlap vat claims the wyoming spine — the hole closes because someone actually asked");
+  const fc = r2.held.find((h) => h.shape === "fort-collins");
+  ok(fc && fc.redundancy >= 2 && fc.claimed_by.some((c) => c.kind === "rung") && fc.claimed_by.some((c) => c.kind === "vat"),
+    "a covered shape shows WHO claims it (rung + vat) — redundancy visible, never assumed");
+  ok(r2.unplaced === "1-9", "the default-hold backlog rides the index too (held at the boundary is a shown fact)");
+  ok(!JSON.stringify(r2.held).match(/"placements":\s*\d/), "coverage speaks log bands only");
+}
+
 rmSync(dir, { recursive: true, force: true });
 if (fails) { console.error(`\n${fails} FAILED`); process.exit(1); }
 console.log("\nall cascade tests passed");
