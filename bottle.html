@@ -5,8 +5,12 @@
      sha256 over the EXACT BYTES of the terms (constitutions/README.md: "its identity is the
      content hash over those exact bytes"), so the hash ceremony happens here, live, and only
      when every byte is yours. Questions are either SUGGESTIONS (the space stays open) or are
-     WOVEN INTO THE BYTES (the deliberate lock a judge can literally read). No network, no
-     identity, no telemetry — WebCrypto digest only; the download is the exact bytes you hash. -->
+     WOVEN INTO THE BYTES (the deliberate lock a judge can literally read). The hash ceremony is
+     WebCrypto-digest only — no network, no identity, no telemetry. The one outward move is the
+     HANDOFF (docs/faces.md slice 4): Antidote iframes Tell with the constitution field FORCED, and
+     that iframe loads only when you click "preview the poll here" — the sole network this page ever
+     makes, and only on your gesture. The link it builds is a preview; only a commissioned Tell
+     mints the live token, and the forced terms ride the same field either way. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -43,6 +47,14 @@
   .next { font-size: .82rem; color: #c7d1d9; }
   .next code { color: #7fd4a8; font-size: .78rem; }
   a { color: #7fd4a8; }
+  #handoff fieldset { }
+  .forced { font-family: ui-monospace, monospace; font-size: .78rem; color: #7fd4a8; word-break: break-all; }
+  .locked { color: #e0c07f; font-size: .78rem; }
+  .handoff-open { display: inline-block; border: 1px solid #33404a; border-radius: .4rem; padding: .45rem .9rem;
+         text-decoration: none; color: #7fd4a8; }
+  .handoff-open[aria-disabled="true"] { opacity: .5; pointer-events: none; }
+  .tell-frame { width: 100%; height: 26rem; border: 1px solid #2a3138; border-radius: .4rem; background: #fff;
+         margin-top: .6rem; }
 </style>
 </head>
 <body>
@@ -81,6 +93,27 @@ ceremony only happens when every byte is yours.</p>
   <ul id="qs"></ul>
 </fieldset>
 
+<fieldset id="handoff">
+  <legend>run a question under this bottle — the handoff to Tell</legend>
+  <p class="muted" id="handoff-lock">Write terms above first. The handoff <b>forces</b> this bottle's hash into
+    every answer — and there is no hash yet.</p>
+  <div id="handoff-live" hidden>
+    <div class="row"><input type="text" id="study" placeholder="a slug for this study (e.g. parks-2026)"></div>
+    <div class="row"><input type="text" id="hq" placeholder="one question to ask under these terms"></div>
+    <p class="locked">⚖ the constitution field is <b>forced</b> — you cannot unset it here. Every answer composed
+      through this link wears these exact terms, inside the signer's signature:</p>
+    <div class="row"><span class="forced" id="forced">—</span></div>
+    <div class="row">
+      <a id="open" class="handoff-open" target="_blank" rel="noopener">open in Tell ↗</a>
+      <button id="frame-btn">preview the poll here</button>
+    </div>
+    <p class="muted">Tell is vanilla — a preview mints no token, so this shows the poll and the forced law
+      without composing a live reply; a commissioned study mints the live token and the terms ride the same
+      field either way. Clicking preview loads Tell in the frame below — the only network this page makes.</p>
+    <div id="frame-mount"></div>
+  </div>
+</fieldset>
+
 <fieldset>
   <legend>what happens next (nothing here has happened yet)</legend>
   <p class="next">
@@ -92,7 +125,7 @@ ceremony only happens when every byte is yours.</p>
     servers flush toward).<br>
     3 — What other known terms yours <b>permits</b> or <b>refuses</b> goes in the lattice; every pair the
     lattice doesn't know <b>queues for a human</b> — the judge is never the sole gate.<br>
-    4 — Running a poll under these terms is Tell's job, not this page's: the handoff forces the
+    4 — Running a poll under these terms is Tell's job, not this page's: the handoff above forces the
     constitution field and your on-device identity signs, same as ever. One question at a time is a
     whole study, because the study <em>is</em> the constitution.
   </p>
@@ -102,13 +135,41 @@ ceremony only happens when every byte is yours.</p>
 const $ = (id) => document.getElementById(id);
 const enc = new TextEncoder();
 const questions = [];
+const TELL = "https://tell.anecdote.channel";
+let currentHash = "";                     // the bottle's NAME once terms exist — forced into the handoff
 
 async function rehash() {
   const bytes = enc.encode($("terms").value);
   $("nbytes").textContent = bytes.length;
-  if (!bytes.length) { $("hash").textContent = "sha256: (write something)"; return; }
+  if (!bytes.length) { $("hash").textContent = "sha256: (write something)"; currentHash = ""; drawHandoff(); return; }
   const d = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
-  $("hash").textContent = "sha256:" + [...d].map((b) => b.toString(16).padStart(2, "0")).join("");
+  currentHash = "sha256:" + [...d].map((b) => b.toString(16).padStart(2, "0")).join("");
+  $("hash").textContent = currentHash;
+  drawHandoff();
+}
+
+// The handoff URL — vanilla Tell, the bottle's hash forced into the constitution field. Same display
+// grammar the Floor uses (pile/poll/q), never a credential: only a commissioned Tell mints a token.
+const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 63);
+function handoffURL() {
+  if (!/^sha256:[0-9a-f]{64}$/.test(currentHash)) return "";
+  const pairs = [["pile", slug($("study").value) || "bottle"], ["poll", "q1"]];
+  const q = $("hq").value.trim();
+  if (q) pairs.push(["q", q]);
+  pairs.push(["constitution", currentHash]);   // forced — always last, always present
+  return TELL + "/?" + pairs.map(([k, v]) => k + "=" + encodeURIComponent(v)).join("&");
+}
+
+function drawHandoff() {
+  const has = /^sha256:[0-9a-f]{64}$/.test(currentHash);
+  $("handoff-lock").hidden = has;
+  $("handoff-live").hidden = !has;
+  if (!has) return;
+  $("forced").textContent = currentHash.slice(0, 23) + "…";
+  const url = handoffURL();
+  $("open").href = url;
+  const mount = $("frame-mount");
+  if (mount.firstChild) mount.firstChild.src = url;   // a live preview re-points when terms/question change
 }
 
 function drawQs() {
@@ -134,6 +195,20 @@ $("weave").onclick = () => {
     questions.map((q) => `- ${q}`).join("\n") + "\n";
   $("terms").value = $("terms").value.replace(/\n*$/, "") + block;
   questions.length = 0; drawQs(); rehash();
+};
+
+$("study").addEventListener("input", drawHandoff);
+$("hq").addEventListener("input", drawHandoff);
+// The Antidote-iframes-Tell moment: the frame loads ONLY on this deliberate click.
+$("frame-btn").onclick = () => {
+  const url = handoffURL();
+  if (!url) return;
+  $("frame-mount").innerHTML = "";
+  const f = document.createElement("iframe");
+  f.className = "tell-frame";
+  f.setAttribute("title", "Tell — poll preview under this bottle's constitution");
+  f.src = url;
+  $("frame-mount").append(f);
 };
 
 $("download").onclick = () => {
