@@ -1,0 +1,5 @@
+{
+  "schema": "antidote.downstream/v1",
+  "note": "The next rung(s) down the cascade (docs/cascade.md): registration-down creates the upstream lifeline a lower vat PRs back through. Each rung declares the shape it charters for and the COMMON CONSTITUTION it OFFERS (its own antidote.yml constitution hash) — bin/distill selects by shape containment and gates every record through judgeConstitution against that offer; a rung offering no constitution receives nothing (no constitution, no catalog). Ships EMPTY: no rung, no down-hop. Example: {\"id\":\"colorado-state\",\"repo\":\"example-org/antidote.colorado\",\"shape\":\"colorado\",\"constitution\":\"sha256:…\",\"signer\":\"key:sha256:…\"}.",
+  "rungs": []
+}

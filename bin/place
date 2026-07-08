@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# bin/place — exec shim; the logic lives in place.mjs (importable by test/cascade.test.mjs).
+exec node "$(cd "$(dirname "$0")" && pwd)/place.mjs" "$@"

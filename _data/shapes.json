@@ -1,0 +1,6 @@
+{
+  "schema": "antidote.shape-catalog/v1",
+  "note": "The shape catalog (docs/cascade.md): a DECLARED, content-hash-versioned document — shapes are convention, never authority; adopting a new version IS the boundary change. Nesting spine is single-parent (within); a lateral overlap shape carries overlaps and no within. Ships EMPTY so default-hold is the machine's literal default: with no shapes, bin/place holds everything. Example spine: {\"id\":\"fort-collins\",\"level\":\"city\",\"within\":\"larimer\"}, {\"id\":\"larimer\",\"level\":\"county\",\"within\":\"colorado\"}, {\"id\":\"colorado\",\"level\":\"state\"}. Example lateral: {\"id\":\"cd04\",\"level\":\"district\",\"overlaps\":[\"larimer\",\"weld\"]}.",
+  "lineage": "",
+  "shapes": []
+}
