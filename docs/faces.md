@@ -21,8 +21,11 @@ on-device — the offline-origin posture everything here already has), wearing t
    CARVE THE CAVITY: write the terms — the constitution — and in this system a bottle has a
    *propensity to attract the data you name*. You went to the potion shop and wrote down what
    you want; if such data exists (and people were willing), it comes down off the shelf.
-3. **The shelf** *(later — needs the advertising surface #95 names)*: browse what exists —
-   constitutions as the label board applied to law; studies public and semi-private; the silt
+3. **The shelf** *(later — needs the advertising surface #95 names)*: browse what exists — the noun
+   it brokers is the **common cause** (`docs/common-cause.md`): the found, provenance-hashed
+   derivative of constitutions, and the major ones (a *political* antidote, an *emergency* antidote)
+   are how we scope the industries we sell to. Constitutions as the label board applied to law;
+   studies public and semi-private; the silt
    around the named bottles (the runoff/coverage index, `bin/coverage`, whose NAMED holes are
    literally this face's "studies that could rise" suggestions); estimates of how much data a
    given set of terms would attract (archive back-catalog vs new-answers-only, date ranges,
@@ -80,6 +83,12 @@ holds:
   (`judgeConstitution`, the same gateway as the door), pours them toward it, and leaves
   everything else sitting — it never concentrates and never merges, which is why "distill"
   was the wrong word: nothing here transforms; it separates and pours.
+- **common cause** — the found unit (`docs/common-cause.md`): the **meet** two-or-more
+  constitutions are discovered to share, hashed over its provenance (parents + meet + the counsel
+  record, when the mix was forced) rather than over authored bytes. The first object named by
+  *relationship*, not *authorship* — a cause is shared, not held. **brew** is the nonprofit's act of
+  standing one up for query and keeping it available; everything ever chosen to brew is brewable
+  again, because its provenance travels with it.
 - Colloquial, welcome, never schema: **bottle** (a commissioned charter — even a free one),
   **tincture**, **silt** (what piles up around the named bottles — formally the runoff, indexed
   by the coverage holes), **field-acquired vs synthesized** (the two ends of the flow).

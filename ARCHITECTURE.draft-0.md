@@ -221,6 +221,18 @@ questions here — no, this one doesn't work"). Honest default: an empty `shapes
 nothing and the queue reads exactly as before (guard #9 — the judge is never the sole gate, and
 now neither is the reading of it).
 
+**Common cause — the found derivative** (`docs/common-cause.md`). When the judge finds a **meet**
+between constitutions — the shared floor a `permits` entry asserts — that meet can be *named* as a
+**common cause**: the first unit in the system that is *discovered* rather than *declared*, hashed
+over its provenance (parents + meet + the counsel record when the mix was forced) rather than over
+authored bytes. It is not this file's job to compare across servers, and deliberately so: Atlas does
+not judge, it **fans a query to many antidote servers**, each of which assays for a common cause,
+and Atlas declares only *how it weighs* their answers (`docs/roles.md`). Atlas owns the weighting;
+antidote owns the comparison — which is why an antidote must be *attached*, and why this stays a
+side bench and never an oracle over the wider data. The major common causes become the market
+surface and the flush-down flattening (`docs/common-cause.md`); the down-hop is the decant
+(`docs/cascade.md`).
+
 **Where the lattice comes from — the licensing model** (`docs/roles.md`). The originator or
 buyer **writes the license they want to name** (free or paid — the gate is *licensed*, not
 *paid*); Antidote curates and lists the ones it will broker (Atlas carries them as want-ads,
