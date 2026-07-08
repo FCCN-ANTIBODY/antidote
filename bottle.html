@@ -1,0 +1,151 @@
+<!doctype html>
+<!-- bottle.html — THE BOTTLE-MAKER (docs/faces.md, face 2; the inverse of Tell). Constitution
+     REQUIRED, questions optional. You are not designing a questionnaire: you are carving the
+     cavity — naming terms so data that matches can flow to you. The bottle's NAME is the
+     sha256 over the EXACT BYTES of the terms (constitutions/README.md: "its identity is the
+     content hash over those exact bytes"), so the hash ceremony happens here, live, and only
+     when every byte is yours. Questions are either SUGGESTIONS (the space stays open) or are
+     WOVEN INTO THE BYTES (the deliberate lock a judge can literally read). No network, no
+     identity, no telemetry — WebCrypto digest only; the download is the exact bytes you hash. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Antidote — make a bottle</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0 auto; max-width: 44rem; padding: 1rem; background: #101418; color: #e8ecef;
+         font: 16px/1.5 system-ui, sans-serif; }
+  header { display: flex; align-items: baseline; gap: .6rem; flex-wrap: wrap; }
+  h1 { font-size: 1.2rem; margin: .2rem 0; }
+  nav.doors { font-size: .8rem; color: #9aa7b0; margin: .2rem 0 .8rem; }
+  nav.doors a { color: #7fd4a8; text-decoration: none; }
+  nav.doors span.here { color: #e8ecef; }
+  .muted { color: #9aa7b0; font-size: .85rem; }
+  fieldset { border: 1px solid #2a3138; border-radius: .5rem; margin: 1rem 0; padding: .8rem; }
+  legend { padding: 0 .4rem; color: #9aa7b0; font-size: .85rem; }
+  textarea, input[type=text] { width: 100%; box-sizing: border-box; background: #0a0d10; color: #e8ecef;
+         border: 1px solid #2a3138; border-radius: .35rem; padding: .5rem; font: inherit; }
+  textarea { min-height: 10rem; font-family: ui-monospace, monospace; font-size: .8rem; }
+  button { background: #18222b; color: #e8ecef; border: 1px solid #33404a; border-radius: .4rem;
+         padding: .45rem .9rem; font: inherit; cursor: pointer; }
+  button:hover { border-color: #7fd4a8; }
+  .row { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .5rem; align-items: center; }
+  .hash { font-family: ui-monospace, monospace; font-size: .78rem; color: #7fd4a8; word-break: break-all; }
+  .bytes { font-size: .72rem; color: #9aa7b0; }
+  ul#qs { list-style: none; padding: 0; margin: .4rem 0 0; }
+  ul#qs li { border-left: 3px solid #2a3138; margin: .35rem 0; padding: .2rem .6rem; font-size: .85rem;
+         display: flex; gap: .5rem; align-items: baseline; }
+  ul#qs li .x { cursor: pointer; color: #e08a8a; font-size: .8rem; }
+  label.mode { display: block; font-size: .85rem; margin: .3rem 0; }
+  .next { font-size: .82rem; color: #c7d1d9; }
+  .next code { color: #7fd4a8; font-size: .78rem; }
+  a { color: #7fd4a8; }
+</style>
+</head>
+<body>
+<header>
+  <img src="./icon.svg" alt="" width="34" height="34">
+  <h1>Make a bottle</h1>
+</header>
+<nav class="doors"><a href="./index.html">your chronicle</a> · <span class="here">make a bottle</span> · <span title="browse what exists — the shelf (coming; civic-node#95)">the shelf (soon)</span></nav>
+
+<p class="muted">You are not designing a questionnaire. You are naming <em>terms</em> — who may read
+what flows in, how it may be aggregated, sold, retained, revoked — and a bottle has a propensity to
+attract the data you name. The bottle's <em>name</em> is the hash of your exact bytes: change a
+comma and it is a different bottle. Terms get written deliberately, so take your time; the hash
+ceremony only happens when every byte is yours.</p>
+
+<fieldset>
+  <legend>the terms — the constitution, in your own plain words</legend>
+  <textarea id="terms" placeholder="Answers governed by these terms may be…&#10;They may never be…&#10;Aggregation is permitted into…&#10;Retention…  Revocation…  Secondary uses…"></textarea>
+  <div class="row">
+    <span class="bytes"><span id="nbytes">0</span> bytes — every one of them is law</span>
+    <button id="download">download the exact bytes</button>
+  </div>
+  <div class="row"><span class="hash" id="hash">sha256: (write something)</span></div>
+</fieldset>
+
+<fieldset>
+  <legend>questions — optional, two very different meanings</legend>
+  <label class="mode"><input type="radio" name="mode" value="suggest" checked>
+    <b>suggestions</b> — seeds for polls anyone may run under these terms; the space stays open</label>
+  <label class="mode"><input type="radio" name="mode" value="weave">
+    <b>the only questions</b> — weave the list into the terms themselves, inside the hash, so a
+    judge can literally read what this bottle refuses</label>
+  <input type="text" id="q" placeholder="a question this bottle anticipates">
+  <div class="row"><button id="add-q">add</button>
+    <button id="weave" hidden>weave the list into the terms</button></div>
+  <ul id="qs"></ul>
+</fieldset>
+
+<fieldset>
+  <legend>what happens next (nothing here has happened yet)</legend>
+  <p class="next">
+    1 — Your exact bytes land in the repo as <code>constitutions/&lt;name&gt;.md</code>; the hash above is
+    how every part of the system will speak of them: the charter line, the lattice, every cutout an
+    answer wears, every teleport that carries it.<br>
+    2 — <b>Charter</b> (wear it yourself: it becomes your server's <code>antidote.yml constitution:</code>)
+    or <b>commission</b> (a bottle stood up for you — even free — whose declared shape and offer other
+    servers flush toward).<br>
+    3 — What other known terms yours <b>permits</b> or <b>refuses</b> goes in the lattice; every pair the
+    lattice doesn't know <b>queues for a human</b> — the judge is never the sole gate.<br>
+    4 — Running a poll under these terms is Tell's job, not this page's: the handoff forces the
+    constitution field and your on-device identity signs, same as ever. One question at a time is a
+    whole study, because the study <em>is</em> the constitution.
+  </p>
+</fieldset>
+
+<script type="module">
+const $ = (id) => document.getElementById(id);
+const enc = new TextEncoder();
+const questions = [];
+
+async function rehash() {
+  const bytes = enc.encode($("terms").value);
+  $("nbytes").textContent = bytes.length;
+  if (!bytes.length) { $("hash").textContent = "sha256: (write something)"; return; }
+  const d = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
+  $("hash").textContent = "sha256:" + [...d].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+function drawQs() {
+  $("qs").innerHTML = "";
+  questions.forEach((q, i) => {
+    const li = document.createElement("li");
+    const x = document.createElement("span"); x.className = "x"; x.textContent = "✕";
+    x.onclick = () => { questions.splice(i, 1); drawQs(); };
+    const t = document.createElement("span"); t.textContent = q;
+    li.append(x, t); $("qs").append(li);
+  });
+  $("weave").hidden = !(questions.length && document.querySelector("input[name=mode]:checked").value === "weave");
+}
+
+$("terms").addEventListener("input", rehash);
+$("add-q").onclick = () => { const v = $("q").value.trim(); if (v) { questions.push(v); $("q").value = ""; drawQs(); } };
+$("q").addEventListener("keydown", (e) => { if (e.key === "Enter") $("add-q").onclick(); });
+for (const r of document.querySelectorAll("input[name=mode]")) r.onchange = drawQs;
+
+// The deliberate lock: the list becomes BYTES of the terms — inside the hash, readable by a judge.
+$("weave").onclick = () => {
+  const block = "\n\nQUESTIONS — this constitution governs ONLY the following questions:\n" +
+    questions.map((q) => `- ${q}`).join("\n") + "\n";
+  $("terms").value = $("terms").value.replace(/\n*$/, "") + block;
+  questions.length = 0; drawQs(); rehash();
+};
+
+$("download").onclick = () => {
+  const bytes = enc.encode($("terms").value);
+  if (!bytes.length) return;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([bytes], { type: "text/markdown" }));
+  a.download = "constitution.md";
+  a.click(); URL.revokeObjectURL(a.href);
+};
+
+rehash();
+</script>
+</body>
+</html>
