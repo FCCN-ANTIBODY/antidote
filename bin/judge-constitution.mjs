@@ -47,7 +47,9 @@ export function readCharter(root) {
 
 export function readLattice(root) {
   const p = process.env.ANTIDOTE_LATTICE || path.join(root, "_data/lattice.json");
-  return readJson(p, { schema: "antidote.lattice/v1", permits: {}, refuses: {} });
+  // shapes: per-hash fill/limit annotations (bin/constitution-shape) — advisory only, read at
+  // the queue, never by the verdict above. Absent/empty => the queue reads exactly as before.
+  return readJson(p, { schema: "antidote.lattice/v1", permits: {}, refuses: {}, shapes: {} });
 }
 
 async function main() {

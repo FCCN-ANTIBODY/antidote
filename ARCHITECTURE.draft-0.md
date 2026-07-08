@@ -203,6 +203,24 @@ Two existing shapes absorb this:
   seen and consented to, human-paced. The judge automates the known lattice; the queue
   absorbs everything else. A fuzzy judgment is never the sole gate.
 
+**Fill vs. limit — reading a constitution's shape, never deciding on it** (the bottle-maker's
+two meanings of "questions optional", `docs/faces.md`). A constitution is written one of two
+ways: **open** (*building to be filled* — no closed question set; the space stays open for polls
+anyone may run under it) or **limiting** (*limiting the space* — the deliberate variant where the
+author wove a literal question list INTO the terms text, so it sits inside the hash). Because the
+lock is **bytes, not UI state**, the shape is recoverable by anyone from the exact bytes: a pure
+classifier finds the woven marker and reads back the closed list. This shape is recorded as an
+**annotation in the lattice** (`shapes: { "<hash>": { shape, questions } }`) — data *about* a
+known constitution, alongside the `permits`/`refuses` statements. It changes nothing about
+admission: the verdict stays the identity/lattice **hash** comparison (the ratchet, guard #2), and
+the classifier never emits `admit` or `refuse`. Its one use is **advisory**: when the judge
+*queues* a novel pair, the queued entry's `opinion` is filled from these annotations — "this
+server's constitution limits to a closed set of N questions; the arrival's constitution is
+unknown" — so the human deciding has the literal list in front of them ("there's clearly a list of
+questions here — no, this one doesn't work"). Honest default: an empty `shapes` map annotates
+nothing and the queue reads exactly as before (guard #9 — the judge is never the sole gate, and
+now neither is the reading of it).
+
 **Where the lattice comes from — the licensing model** (`docs/roles.md`). The originator or
 buyer **writes the license they want to name** (free or paid — the gate is *licensed*, not
 *paid*); Antidote curates and lists the ones it will broker (Atlas carries them as want-ads,

@@ -95,6 +95,23 @@ function scratch({ inbox = {}, stamp = "", lattice } = {}) {
   ok(punched.length === 0, "nothing queued is punched");
 }
 
+// 5b. fill/limit advisory (slice 5): when the lattice ANNOTATES the server constitution as limiting,
+//     a queued arrival carries the advisory — the closed list in front of the human — but the VERDICT
+//     is unchanged (still a queue: the reading is never the gate).
+{
+  const novel = "sha256:" + "9".repeat(64);
+  const lattice = { schema: "antidote.lattice/v1", permits: {}, refuses: {},
+    shapes: { [S]: { shape: "limiting", questions: ["Cut or keep the dog park?", "Fund the pool?"] } } };
+  const dir = scratch({ inbox: { from: "colorado", constitution: novel, ballots: [await ballot()] }, lattice });
+  const { manifest } = await runIntake(dir, { now: NOW });
+  ok(manifest.fates.queue.length === 1, "still queues — the advisory changed no verdict");
+  const q = JSON.parse(readFileSync(path.join(dir, "_data/constitution-queue.json"), "utf8"));
+  ok(q.waiting[0].opinion && /limits to a closed set of 2 questions/.test(q.waiting[0].opinion.advisory),
+    "the queued entry now carries the limiting advisory");
+  ok(JSON.stringify(q.waiting[0].opinion.questions) === JSON.stringify(["Cut or keep the dog park?", "Fund the pool?"]),
+    "the closed list rides to the human on the queue entry");
+}
+
 // 6. punch: cutouts land content-addressed per bucket; the cutout is THE WHOLE ENVELOPE, holes named.
 {
   const keep = await ballot({ hue: "cerulean" }); // an esoteric envelope property — the frame keeps growing
