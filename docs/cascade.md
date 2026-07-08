@@ -7,7 +7,7 @@ rules #94 argues.
 
 ## Built (v1) — the decisions taken, in words, before the verbs run
 
-The first cut of the machinery below is `bin/place`, `bin/vat`, and `bin/distill`, over a
+The first cut of the machinery below is `bin/place`, `bin/vat`, and `bin/decant`, over a
 declared catalog at `_data/shapes.json` and a downstream registry at `_data/downstream.yml`.
 The v1 decisions, so nothing is re-derived:
 
@@ -29,7 +29,7 @@ The v1 decisions, so nothing is re-derived:
   question below demands. So a v1 vat is the *view* half only: containment descent (plus the
   coarse full-overlap set for a lateral shape), thin references, log-band counts, marked
   derived/evictable.
-- **`bin/distill` selects, `bin/egress` sends.** The down-hop composes an egress *yield* —
+- **`bin/decant` selects, `bin/egress` sends.** The down-hop composes an egress *yield* —
   records placed within the target shape whose constitution the lattice says the downstream's
   declared COMMON **admits** (`judgeConstitution`, the same gateway as intake). A `queue`
   verdict holds the record and says so — **"deeper overrides a restrictive arrival-COMMON"

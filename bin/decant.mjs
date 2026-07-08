@@ -1,4 +1,4 @@
-// bin/distill.mjs — THE DOWN-HOP SELECTOR (docs/cascade.md; civic-node #94). One rung of the cascade
+// bin/decant.mjs — THE DOWN-HOP SELECTOR (docs/cascade.md; civic-node #94). One rung of the cascade
 // flushing to the next (Fort Collins -> Larimer -> Colorado) is the same teleport gesture the Atlases
 // use into the top tier — and this verb is only its SELECTION half: which records may ride, judged by
 // the same gateway that guards the front door. bin/egress (built) composes the teleport from what this
@@ -14,15 +14,15 @@
 // A record placed within the rung's shape whose RAW is not in hand (the ice holds it) is narrated as
 // missing — no silent caps: what was dropped from a bundle is always named.
 //
-//   bin/distill --to RUNG [--records FILE]
+//   bin/decant --to RUNG [--records FILE]
 //     RUNG     an id in _data/downstream.json (declares its shape + its COMMON offer)
 //     FILE     the raw records in hand (a bare array, or {records:[...]}) — e.g. the ice yield,
-//              decrypted by the ice pile's own owner tooling (default _data/distill-records.json)
+//              decrypted by the ice pile's own owner tooling (default _data/decant-records.json)
 //
 // Output: the egress YIELD (default _data/egress-records.json — exactly what bin/egress reads), i.e.
 // { pile, common_constitution: <the rung's offer>, records: [the admitted raw] }.
 // Env (ANTIDOTE_* overrides): ANTIDOTE_DOWNSTREAM (default _data/downstream.json), ANTIDOTE_SHAPES,
-// ANTIDOTE_PLACEMENTS, ANTIDOTE_DISTILL_IN (default _data/distill-records.json), ANTIDOTE_EGRESS_IN
+// ANTIDOTE_PLACEMENTS, ANTIDOTE_DECANT_IN (default _data/decant-records.json), ANTIDOTE_EGRESS_IN
 // (the yield destination, bin/egress's input).
 
 import { writeFileSync, mkdirSync } from "node:fs";
@@ -34,24 +34,24 @@ import { readCatalog } from "./place.mjs";
 import { containmentSet } from "./vat.mjs";
 import { commitmentOf } from "./egress.mjs";
 
-export async function runDistill(root, opts = {}) {
+export async function runDecant(root, opts = {}) {
   const at = opts.now || new Date().toISOString();
   const to = opts.to;
-  if (!to) throw new Error("distill: --to RUNG is required");
+  if (!to) throw new Error("decant: --to RUNG is required");
   const p = (env, rel) => process.env[env] || path.join(root, rel);
   const downstreamPath = opts.downstream || p("ANTIDOTE_DOWNSTREAM", "_data/downstream.json");
   const ledgerPath = opts.ledger || p("ANTIDOTE_PLACEMENTS", "place/ledger.json");
-  const recordsPath = opts.records || p("ANTIDOTE_DISTILL_IN", "_data/distill-records.json");
+  const recordsPath = opts.records || p("ANTIDOTE_DECANT_IN", "_data/decant-records.json");
   const outPath = opts.out || p("ANTIDOTE_EGRESS_IN", "_data/egress-records.json");
 
   const rung = (readJson(downstreamPath, { rungs: [] }).rungs || []).find((r) => r.id === to);
-  if (!rung) throw new Error(`distill: no rung '${to}' in _data/downstream.json — registration-down comes first (it creates the upstream lifeline)`);
-  if (!rung.shape) throw new Error(`distill: rung '${to}' declares no shape — a rung's charter IS its shape`);
-  if (!rung.constitution) throw new Error(`distill: rung '${to}' offers no COMMON CONSTITUTION — no constitution, no catalog; nothing flows`);
+  if (!rung) throw new Error(`decant: no rung '${to}' in _data/downstream.json — registration-down comes first (it creates the upstream lifeline)`);
+  if (!rung.shape) throw new Error(`decant: rung '${to}' declares no shape — a rung's charter IS its shape`);
+  if (!rung.constitution) throw new Error(`decant: rung '${to}' offers no COMMON CONSTITUTION — no constitution, no catalog; nothing flows`);
 
   const { catalog } = await readCatalog(root, opts.catalog);
   const c = containmentSet(catalog, rung.shape);
-  if (!c) throw new Error(`distill: the adopted catalog names no shape '${rung.shape}' — adopt a version that does before flushing toward it`);
+  if (!c) throw new Error(`decant: the adopted catalog names no shape '${rung.shape}' — adopt a version that does before flushing toward it`);
 
   // the raw in hand, keyed by commitment (a sealed record's id rides outside; a mesh record's is computed).
   const rawIn = readJson(recordsPath, []);
@@ -85,7 +85,7 @@ function parseArgs(argv) {
   const out = {}; const map = { "--to": "to", "--records": "records" };
   for (let i = 0; i < argv.length; i++) {
     const k = map[argv[i]];
-    if (!k) throw new Error(`distill: unknown arg ${argv[i]}`);
+    if (!k) throw new Error(`decant: unknown arg ${argv[i]}`);
     out[k] = argv[++i];
   }
   return out;
@@ -93,9 +93,9 @@ function parseArgs(argv) {
 
 async function main() {
   const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-  const r = await runDistill(root, parseArgs(process.argv.slice(2)));
-  console.error(`distill (${r.to} / ${r.shape}): ${r.admitted.length} admitted into the yield, ` +
+  const r = await runDecant(root, parseArgs(process.argv.slice(2)));
+  console.error(`decant (${r.to} / ${r.shape}): ${r.admitted.length} admitted into the yield, ` +
     `${r.queued.length} queued for counsel, ${r.refused.length} refused, ${r.missingRaw.length} raw-not-in-hand (the ice holds them)`);
-  console.error(`distill: ${r.next}`);
+  console.error(`decant: ${r.next}`);
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await main();
