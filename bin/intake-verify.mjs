@@ -49,6 +49,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 import { contentId, verifyAttested, readJson } from "./attest.mjs";
 import { judgeConstitution, readCharter, readLattice } from "./judge-constitution.mjs";
+import { shapeOpinion } from "./constitution-shape.mjs";
 
 const BALLOT_SCHEMA = "anecdote.ballot/v1";
 export function isBallot(b) {
@@ -133,7 +134,11 @@ export async function runIntake(root, opts = {}) {
     const held = readJson(queuePath, { schema: "antidote.constitution-queue/v1", waiting: [] });
     const already = new Set(held.waiting.map((w) => w.id));
     for (const f of queue) if (!already.has(f.id))
-      held.waiting.push({ id: f.id, constitution: f.constitution, from, at, opinion: null });
+      // The advisory reads fill/limit shapes from the lattice annotations — never a verdict, and
+      // null (unchanged) whenever nothing is annotated. It only puts the closed list, if any, in
+      // front of the human who decides.
+      held.waiting.push({ id: f.id, constitution: f.constitution, from, at,
+        opinion: shapeOpinion({ answer: f.constitution, server: charter.constitution, lattice }) });
     writeFileSync(queuePath, JSON.stringify(held, null, 2) + "\n");
   }
 

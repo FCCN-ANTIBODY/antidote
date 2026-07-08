@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# bin/constitution-shape — exec shim; the logic lives in constitution-shape.mjs (importable by test/*.test.mjs).
+exec node "$(cd "$(dirname "$0")" && pwd)/constitution-shape.mjs" "$@"
