@@ -5,6 +5,37 @@ containment**. Register of civic-node #94 (the cascade tier), #88 (the place abo
 #91 (deflate-to-archive). Shape, not settled spec — the durable in-repo home for the
 rules #94 argues.
 
+## Built (v1) — the decisions taken, in words, before the verbs run
+
+The first cut of the machinery below is `bin/place`, `bin/vat`, and `bin/distill`, over a
+declared catalog at `_data/shapes.json` and a downstream registry at `_data/downstream.yml`.
+The v1 decisions, so nothing is re-derived:
+
+- **The placement signal is the record's own carried `scope` name**, matched against catalog
+  shape ids — best-known-finest at *name grain*. A record names no scope, or names one the
+  catalog doesn't hold, and it **holds** (default-hold is the machine's literal default: the
+  catalog ships empty, so at first everything holds). Point/polygon placement is a later
+  refinement of the same join, not a different ledger.
+- **The catalog is a declared, content-hash-versioned document** (`antidote.shape-catalog/v1`):
+  the nesting spine is single-parent (`within:`), lateral overlap shapes carry `overlaps:` and
+  no parent. Its version is `contentId` over the document — adopting a new catalog IS the
+  boundary change; nothing in the ledger moves.
+- **The refilter trigger is the catalog version**: `bin/place` re-runs the held backlog
+  whenever the catalog it sees differs from the one the ledger last saw. A held record names
+  what it waits for.
+- **Vats never mix licenses in v1.** A vat groups its references **per original constitution**
+  — the derivative-COMMON move (distilling into a looser COMMON via carve-out or
+  `deeper_constitution` passport) stays behind the counsel gate, unbuilt, exactly as the open
+  question below demands. So a v1 vat is the *view* half only: containment descent (plus the
+  coarse full-overlap set for a lateral shape), thin references, log-band counts, marked
+  derived/evictable.
+- **`bin/distill` selects, `bin/egress` sends.** The down-hop composes an egress *yield* —
+  records placed within the target shape whose constitution the lattice says the downstream's
+  declared COMMON **admits** (`judgeConstitution`, the same gateway as intake). A `queue`
+  verdict holds the record and says so — **"deeper overrides a restrictive arrival-COMMON"
+  never auto-admits** — and a `refuse` stays home. Delivery remains the presumed PR, and the
+  raw released only against receipts (the atlas `bin/retire` idiom, one rung up).
+
 ## Aggregation is Antidote's, by containment
 
 The "place above" is a cascade: hyper-specific contract batches enter at the top (from

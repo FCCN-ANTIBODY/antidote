@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# bin/distill — exec shim; the logic lives in distill.mjs (importable by test/cascade.test.mjs).
+exec node "$(cd "$(dirname "$0")" && pwd)/distill.mjs" "$@"

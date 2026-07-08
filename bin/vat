@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# bin/vat — exec shim; the logic lives in vat.mjs (importable by test/cascade.test.mjs).
+exec node "$(cd "$(dirname "$0")" && pwd)/vat.mjs" "$@"
