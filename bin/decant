@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# bin/decant — exec shim; the logic lives in decant.mjs (importable by test/cascade.test.mjs).
+exec node "$(cd "$(dirname "$0")" && pwd)/decant.mjs" "$@"

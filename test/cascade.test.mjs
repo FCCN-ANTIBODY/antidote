@@ -1,5 +1,5 @@
-// The cascade tier (bin/place + bin/vat + bin/distill; docs/cascade.md, civic-node #94), exercised
-// through the REAL front door: intake -> punch -> place -> vat -> distill -> egress. Default-hold is
+// The cascade tier (bin/place + bin/vat + bin/decant; docs/cascade.md, civic-node #94), exercised
+// through the REAL front door: intake -> punch -> place -> vat -> decant -> egress. Default-hold is
 // the literal default (empty catalog holds everything); placements are seed corn (never rewritten);
 // vats are per-constitution views (no derivative COMMON without counsel); the down-hop is gated by
 // the same judgeConstitution as the door, and what can't ride is named, never silently dropped.
@@ -12,7 +12,7 @@ import { runIntake } from "../bin/intake-verify.mjs";
 import { runPunch } from "../bin/punch.mjs";
 import { runPlace, readCatalog } from "../bin/place.mjs";
 import { runVat, containmentSet } from "../bin/vat.mjs";
-import { runDistill } from "../bin/distill.mjs";
+import { runDecant } from "../bin/decant.mjs";
 import { runEgress } from "../bin/egress.mjs";
 
 let fails = 0;
@@ -128,7 +128,7 @@ const dir = await server(ballots);
   setCatalog(dir, SPINE); await runPlace(dir, { now: NOW }); // restore
 }
 
-// 7. the down-hop: distill selects by containment, gates by the SAME judge, names every non-rider.
+// 7. the down-hop: decant pours by containment, gates by the SAME judge, names every non-rider.
 {
   writeFileSync(path.join(dir, "_data/downstream.json"), JSON.stringify({ schema: "antidote.downstream/v1",
     rungs: [{ id: "colorado-state", repo: "acme/antidote.colorado", shape: "colorado", constitution: CR, signer: "key:sha256:" + "f".repeat(64) }] }));
@@ -136,8 +136,8 @@ const dir = await server(ballots);
   writeFileSync(path.join(dir, "_data/lattice.json"), JSON.stringify({ schema: "antidote.lattice/v1",
     permits: { [C1]: [CR], [C2]: [C1], [C3]: [C1] }, refuses: { [C3]: [CR] } }));
   // raw in hand: the two C1 colorado records; the loveland raw stays on ice.
-  writeFileSync(path.join(dir, "_data/distill-records.json"), JSON.stringify([ballots[0]]));
-  const r = await runDistill(dir, { to: "colorado-state", now: NOW });
+  writeFileSync(path.join(dir, "_data/decant-records.json"), JSON.stringify([ballots[0]]));
+  const r = await runDecant(dir, { to: "colorado-state", now: NOW });
   ok(r.admitted.length === 1 && r.admitted[0] === await idOf(ballots[0]), "an admitted record with raw in hand rides");
   ok(r.queued.length === 1 && r.queued[0].constitution === C2 && /never auto-admitted/.test(r.queued[0].why),
     "an unknown pair queues for counsel — deeper never overrides a restrictive arrival by itself");
@@ -154,10 +154,10 @@ const dir = await server(ballots);
 // 8. a rung must exist, charter a shape, and offer a COMMON — or nothing flows.
 {
   let threw = "";
-  try { await runDistill(dir, { to: "nowhere", now: NOW }); } catch (e) { threw = e.message; }
+  try { await runDecant(dir, { to: "nowhere", now: NOW }); } catch (e) { threw = e.message; }
   ok(/no rung/.test(threw), "an unregistered rung is refused (registration-down comes first)");
   writeFileSync(path.join(dir, "_data/downstream.json"), JSON.stringify({ rungs: [{ id: "bare", shape: "colorado" }] }));
-  threw = ""; try { await runDistill(dir, { to: "bare", now: NOW }); } catch (e) { threw = e.message; }
+  threw = ""; try { await runDecant(dir, { to: "bare", now: NOW }); } catch (e) { threw = e.message; }
   ok(/no COMMON/.test(threw), "a rung offering no constitution receives nothing — no constitution, no catalog");
 }
 

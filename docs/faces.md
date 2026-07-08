@@ -65,22 +65,28 @@ holds:
   but a vat is NOT homogeneous — **it separates at rest**. Its layers are the per-constitution
   groups the code already builds (`composed_of`): always separable, always inspectable. You can
   ask any vat what it contains and get the honest layering back.
-- **ferment** — the slow worker between them: it chews on everything held, bundling records
-  whose COMMON constitutions *already agree* (identical hash, or lattice-permitted) into larger
-  usable layers — and it stops exactly at the counsel gate: **fermenting never derives a new
-  COMMON**. Deriving one stays the gated human act (docs/cascade.md, open questions). Time is on
-  our side — we inverted the real-time dogma everywhere else (limited frame rates, chosen
-  staleness, stale-and-forwarded caches), and this is the same inversion: letting the vat sit IS
-  the process. Operationally: the ONE batchable GitHub-workflow job (the enterprise half), never
-  a hosted worker; honest default off.
+- **settle** — the slow work between them, and the honest word for it: nothing is transformed,
+  the parts just find their layers, given time. Two layers that settle *into one* were the same
+  liquid all along — which is exactly what a lattice `permits` entry asserts: miscibility that
+  was always true, discovered slowly, never manufactured. Settling stops precisely at the
+  counsel gate — forcing two unlike layers to mix is an emulsion, and somebody has to
+  deliberately shake the vat; that somebody is never the machine. Time is on our side — we
+  inverted the real-time dogma everywhere else (limited frame rates, chosen staleness,
+  stale-and-forwarded caches), and this is the same inversion: you categorically cannot rush
+  settling; letting the vat sit IS the process. Operationally: the ONE batchable
+  GitHub-workflow job (the enterprise half), never a hosted worker; honest default off.
+- **decant** — the down-hop (`bin/decant`): pour a settled layer off into the next vessel
+  *without disturbing the rest*. It selects the layers the rung's declared COMMON admits
+  (`judgeConstitution`, the same gateway as the door), pours them toward it, and leaves
+  everything else sitting — it never concentrates and never merges, which is why "distill"
+  was the wrong word: nothing here transforms; it separates and pours.
 - Colloquial, welcome, never schema: **bottle** (a commissioned charter — even a free one),
   **tincture**, **silt** (what piles up around the named bottles — formally the runoff, indexed
   by the coverage holes), **field-acquired vs synthesized** (the two ends of the flow).
-- Rejected for schema use: "distilled" as the primary verb — after the fermenting framing it
-  gives the wrong image; what the cascade does is closer to **synthesis** (finding the
-  constituent parts of agreeing constitutions so larger datasets become available), and the
-  down-hop verbs already have names (`place`, `vat`, `distill` stays as the down-hop selector's
-  name since it selects rather than merges).
+- Retired from schema use: "distill"/"ferment". Distillation concentrates and fermenting
+  produces something new — both promise a transformation the counsel gate exists to forbid.
+  "Containment distillation" survives in the design record only as #94's historical register;
+  the flow reads **extract → settle → decant**, end to end.
 
 ## The positioning — what the storefront must feel like
 
