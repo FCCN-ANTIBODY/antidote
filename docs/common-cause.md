@@ -32,6 +32,15 @@ is different from a bottle:
 It is still content-addressed like everything else, but hashed over **{parents, meet, counsel-if-
 forced}** rather than over authored bytes.
 
+## Assay — the act that finds a meet
+
+The judge does not **rule**; it **assays.** An assay is the alchemist's bench-test: put two
+constitutions in and it reports *what they share* — it never pronounces on worth, it reveals
+composition. That is the whole anti-oracle posture in one verb: a side bench, not a throne. When an
+assay finds a clean meet, that meet can be named a common cause; when it finds none, it says so and
+nothing is forced. (The word for the *result* is the **meet**; the word for *standing one up for
+query and keeping it available* is **brew**; the word for the *act of finding* is **assay**.)
+
 ## The meet — clean or forced
 
 The **meet** is the shared floor of two constitutions (the lattice's meet — the greatest common

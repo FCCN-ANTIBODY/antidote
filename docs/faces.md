@@ -142,9 +142,14 @@ the last step, and by then they already know exactly what they're buying.
    suggest-vs-weave-into-the-bytes toggle, the what-happens-next narration (constitutions/ file,
    charter vs commission, lattice, counsel queue), a download of the exact bytes. No network, no
    new identity machinery — WebCrypto digest only.
-2. `index.html` grows the three-door strip (chronicle · bottle · shelf) — light touch.
-3. The shelf: needs the advertising/socialization surface (#95) — seeds exist (coverage.json,
-   the heartbeat, the plaque index); estimates need an archive query in bands.
+2. `index.html` grows the three-door strip (chronicle · bottle · shelf) — light touch. *(built)*
+3. The shelf *(built — `shelf.html` + `shelf/shelf.mjs`)*: the LOCAL browse, offline. Reads this
+   server's own published data (the lattice + the coverage index) into common causes (each
+   `permits` pair = a meet the judge assayed), silt (coverage holes = studies that could rise), the
+   label board (known constitutions with their fill/limit shape), and banded estimates. The empty
+   archive is a first-class state — the onboarding case points at the bottle-maker. The remaining
+   half — cross-server PUBLIC discovery by label, so others find your bottles — is the real #95
+   dependency (non-shape/label discovery, riding #80/#79); the shelf sits ready to show it.
 4. The handoff *(built)*: Antidote-iframes-Tell with the constitution field forced (couples the
    Floor, anecdote#93, and Tell's embed params). `bottle.html` builds a vanilla-Tell URL from the
    live hash — pile/poll/q display grammar, the constitution FORCED and always present, never a
