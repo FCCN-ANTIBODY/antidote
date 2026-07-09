@@ -1,0 +1,123 @@
+<!doctype html>
+<!-- shelf.html — THE SHELF (docs/faces.md, face 3; docs/common-cause.md). Browse what exists,
+     offline. Pure reading: the page fetches this server's OWN published data (the lattice, the
+     coverage index) — same-origin, sw-precached, no identity, no network beyond this origin — and
+     shows the three things the storefront advertises: the COMMON CAUSES on offer (each a meet the
+     judge already assayed and found miscible), the SILT (coverage holes — studies that could rise),
+     and the LABEL BOARD (every constitution the server knows, with its fill/limit shape). The empty
+     archive is the point, not an error: a city employee who heard "polling tool" lands here with
+     nothing, and the shelf shows what COULD rise and points at the bottle-maker. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Antidote — the shelf</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<script>if("serviceWorker" in navigator)addEventListener("load",function(){navigator.serviceWorker.register("./sw.js").catch(function(){});});</script>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0 auto; max-width: 44rem; padding: 1rem; background: #101418; color: #e8ecef;
+         font: 16px/1.5 system-ui, sans-serif; }
+  header { display: flex; align-items: baseline; gap: .6rem; flex-wrap: wrap; }
+  h1 { font-size: 1.2rem; margin: .2rem 0; }
+  nav.doors { font-size: .8rem; color: #9aa7b0; margin: .2rem 0 .8rem; }
+  nav.doors a { color: #7fd4a8; text-decoration: none; }
+  nav.doors span.here { color: #e8ecef; }
+  .muted { color: #9aa7b0; font-size: .85rem; }
+  h2 { font-size: .95rem; margin: 1.4rem 0 .3rem; }
+  h2 .count { color: #9aa7b0; font-weight: 400; font-size: .8rem; }
+  .card { border: 1px solid #2a3138; border-radius: .5rem; padding: .6rem .7rem; margin: .4rem 0; }
+  .hash { font-family: ui-monospace, monospace; font-size: .76rem; color: #7fd4a8; word-break: break-all; }
+  .sub { font-size: .78rem; color: #9aa7b0; }
+  .badge { display: inline-block; font-size: .68rem; border: 1px solid #33404a; border-radius: 1rem;
+           padding: .05rem .5rem; color: #c7d1d9; margin-left: .3rem; vertical-align: middle; }
+  .badge.limit { border-color: #e0c07f; color: #e0c07f; }
+  .badge.open { border-color: #7fd4a8; color: #7fd4a8; }
+  .badge.band { border-color: #6a7a86; color: #9aa7b0; }
+  ul.qs { margin: .3rem 0 0; padding-left: 1.1rem; font-size: .78rem; color: #c7d1d9; }
+  .empty { border: 1px dashed #33404a; border-radius: .5rem; padding: 1rem; text-align: center; color: #9aa7b0; }
+  .empty a { color: #7fd4a8; }
+  a { color: #7fd4a8; }
+  .asof { font-size: .72rem; color: #6a7a86; margin-top: 1.4rem; }
+</style>
+</head>
+<body>
+<header>
+  <img src="./icon.svg" alt="" width="34" height="34">
+  <h1>The shelf</h1>
+</header>
+<nav class="doors"><a href="./index.html">your chronicle</a> · <a href="./bottle.html">make a bottle</a> · <span class="here">the shelf</span></nav>
+
+<p class="muted">Browse what exists. Nothing here is a delivery — a shelf is a listing. Each
+<b>common cause</b> is a meet the judge <em>assayed</em> and found the two sets of terms already
+share; the <b>silt</b> is what the archive holds that nobody asked for — studies that could rise; the
+<b>label board</b> is every constitution this server knows. It reads only this server's own published
+data, offline.</p>
+
+<div id="mount"><p class="muted">reading the shelf…</p></div>
+<p class="asof" id="asof"></p>
+
+<script type="module">
+import { loadShelf } from "./shelf/shelf.mjs";
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const short = (h) => esc(String(h).slice(0, 23)) + "…";
+const shapeBadge = (shape, questions) =>
+  shape === "limiting" ? `<span class="badge limit">⚖ limits · ${questions.length} question${questions.length === 1 ? "" : "s"}</span>`
+  : shape === "open" ? `<span class="badge open">open</span>`
+  : `<span class="badge">unread</span>`;
+const qsList = (questions) => questions.length ? `<ul class="qs">${questions.map((q) => `<li>${esc(q)}</li>`).join("")}</ul>` : "";
+
+function render(shelf) {
+  if (shelf.empty) {
+    $("mount").innerHTML = `<div class="empty"><p>The archive is empty — nothing has settled here yet.</p>
+      <p class="muted">That is the honest start. <a href="./bottle.html">Make a bottle</a> — name the terms you
+      want — and the first study on this shelf could be yours. As data settles and the judge finds meets,
+      common causes appear here; the silt below them names what nobody has asked for yet.</p></div>`;
+    return;
+  }
+  const sections = [];
+
+  sections.push(`<h2>Common causes <span class="count">${shelf.causes.length}</span></h2>` +
+    (shelf.causes.length ? shelf.causes.map((c) => `<div class="card">
+      <div class="hash">${short(c.constitution)} ${shapeBadge(c.shape, c.questions)}</div>
+      <div class="sub">a meet found to admit <span class="hash">${short(c.admits)}</span> — an assay the judge already made</div>
+      ${qsList(c.questions)}</div>`).join("")
+      : `<p class="muted">No meets found yet — the judge has assayed no two constitutions into a common cause. They appear here as the lattice learns what is miscible.</p>`));
+
+  sections.push(`<h2>Silt — studies that could rise <span class="count">${shelf.silt.length}</span></h2>` +
+    (shelf.silt.length ? shelf.silt.map((s) => `<div class="card">
+      <div>${esc(s.shape)} <span class="badge band">${esc(s.placements)}</span></div>
+      <div class="sub">held, asked for by nobody — the runoff, named. A useful asker could raise this into a study.</div></div>`).join("")
+      : `<p class="muted">No runoff — every held shape is claimed. Nothing is sitting unasked-for.</p>`));
+
+  sections.push(`<h2>The label board <span class="count">${shelf.board.length}</span></h2>` +
+    (shelf.board.length ? shelf.board.map((b) => `<div class="card">
+      <div class="hash">${short(b.constitution)} ${shapeBadge(b.shape, b.questions)}</div>
+      <div class="sub">permits ${b.permits} · refuses ${b.refuses}</div>
+      ${qsList(b.questions)}</div>`).join("")
+      : `<p class="muted">No constitutions known yet.</p>`));
+
+  if (shelf.estimates.length) {
+    sections.push(`<h2>What the archive holds <span class="count">${shelf.estimates.length}</span></h2>
+      <p class="muted">Coarse standing only — bands, never raw counts. This is the honest estimate of what a set of terms would attract: what is already here.</p>` +
+      shelf.estimates.map((e) => `<div class="card"><div>${esc(e.shape)} <span class="badge band">${esc(e.placements)}</span>
+        <span class="sub">· ${e.redundancy} claim${e.redundancy === 1 ? "" : "s"}</span></div></div>`).join(""));
+  }
+
+  $("mount").innerHTML = sections.join("");
+}
+
+try {
+  const shelf = await loadShelf((u) => fetch(u), "./");
+  render(shelf);
+  $("asof").textContent = shelf.at ? "coverage index as of " + shelf.at + " · counts are log bands, never raw"
+    : "no coverage index published yet · run bin/coverage to fill the silt and estimates";
+} catch (e) {
+  $("mount").innerHTML = `<p class="muted">The shelf could not be read on this origin.</p>`;
+}
+</script>
+</body>
+</html>

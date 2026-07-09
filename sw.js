@@ -10,9 +10,9 @@
 // answer. Until then the two-layers rule still holds: the Cache API holds shell CODE; IndexedDB
 // holds YOUR DATA (identity + chronicle); this SW never touches your data.
 
-const VERSION = "antidote-shell-v2";
-const SHELL = ["./", "./index.html", "./bottle.html", "./manifest.webmanifest", "./icon.svg",
-  "./vault/sign.mjs", "./vault/store.mjs", "./vault/keep.mjs", "./vault/chronicle.mjs"];
+const VERSION = "antidote-shell-v3";
+const SHELL = ["./", "./index.html", "./bottle.html", "./shelf.html", "./manifest.webmanifest", "./icon.svg",
+  "./vault/sign.mjs", "./vault/store.mjs", "./vault/keep.mjs", "./vault/chronicle.mjs", "./shelf/shelf.mjs"];
 
 self.addEventListener("install", (e) => e.waitUntil((async () => {
   const cache = await caches.open(VERSION);
