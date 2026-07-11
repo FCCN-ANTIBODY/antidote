@@ -38,6 +38,17 @@ on-device — the offline-origin posture everything here already has), wearing t
 - **Tell**: question REQUIRED, constitution optional — the poll builder.
 - **Antidote**: constitution REQUIRED, questions optional — the universe builder.
 
+These are one product wearing three front doors, not three rival builders. **Tell — the poll
+builder** is the *solicitation surface*: the poll-shaped authoring UI and the answer-time view.
+**Antidote — the universe builder** is the *constitution-first* front door onto that same surface —
+authoring under a constitution **drives** Tell's poll builder rather than replacing it (the iframe
+handoff below is the mechanism). So "Tell builds polls" and "Antidote puppets Tell" are one fact
+seen from two sides: the poll builder is a *component*, and the door you enter by decides whose hand
+is on it. What divides a universe from a poll is the bit the Tell side pins in
+[`solicitation.md`](https://github.com/FCCN-ANTIBODY/tell.anecdote.channel/blob/main/docs/solicitation.md) —
+**a prefab answer is the solicitation signal**: a constitution names terms, and becomes a poll only
+where a question grows a prefab answer to choose from.
+
 "Questions optional" carries two distinct meanings the UI must keep visually separate:
 
 - **Building to be filled** — the primary use: you are not asking anything yet; you are naming
