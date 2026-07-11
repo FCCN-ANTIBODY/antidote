@@ -36,6 +36,11 @@ each importable by its tests:
   compose one pile's yield into an `antidote.teleport/v1` bundle governed whole by its
   COMMON CONSTITUTION, and record custody OUT in the same append-log grammar the intake
   ledger keeps.
+- **The cascade and multitenancy seams** ([`docs/cascade.md`](docs/cascade.md)):
+  **`bin/place`** / **`bin/decant`** / **`bin/vat`** (placement by shape containment and
+  the vats it fills), **`bin/coverage`** (the silt — where the holes are),
+  **`bin/constitution-shape`** (what a charter is *for*), **`bin/report-cursor`** (async
+  aggregation over the ledger), and **`bin/attest`** (the shelf's signed statements).
 
 Tests: `for t in test/*.test.mjs; do node "$t"; done` (no install step).
 
