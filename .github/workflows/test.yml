@@ -1,7 +1,10 @@
 name: "Antidote · tests"
 
 # The bin tools are node-stdlib-only (the vendorless way), so the whole suite is:
-# every test/*.test.mjs, no install step.
+# every test/*.test.mjs, no install step. The *-ui suites drive the runner's own
+# Chrome through anecdote.channel's probe-test harness (a sibling clone, like
+# tell's data-pile consumer clone) and skip themselves cleanly where any of the
+# browser, the checkout, or the 443 bind is missing.
 
 on:
   push:
@@ -18,6 +21,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - name: Clone the UI-harness + template siblings (branch-matching, like the data-pile pattern)
+        # Prefer the matching branch (cross-repo changes ship on the same branch name); fall back to
+        # main once merged.
+        run: |
+          ref="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          git clone --depth 1 --branch "$ref" https://github.com/FCCN-ANTIBODY/anecdote.channel ../anecdote.channel \
+            || git clone --depth 1 https://github.com/FCCN-ANTIBODY/anecdote.channel ../anecdote.channel
+          git clone --depth 1 --branch "$ref" https://github.com/FCCN-ANTIBODY/data-pile ../data-pile \
+            || git clone --depth 1 https://github.com/FCCN-ANTIBODY/data-pile ../data-pile
+      - name: Let the UI harness bind 443 (real-https origins for pages that pin absolute URLs)
+        run: sudo sysctl -w net.ipv4.ip_unprivileged_port_start=443
       - name: Run the suites
         run: |
           set -euo pipefail
