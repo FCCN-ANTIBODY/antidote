@@ -35,6 +35,27 @@ provisioner_spec: "data-pile/pile-new/v1"
   return { pileYaml: y, keyPub: recipient + "\n" };
 }
 
+// The freshly provisioned pile's SELF-DESCRIPTION at inception (anecdote.channel docs/decisions.md D7,
+// composer/describe-op): the dated, zero-count snapshot — "nothing here yet, as of <when>" as a
+// STATEMENT, not an absence. One macro kind, "data-pile", for polls and investigations alike; subtypes
+// stay emergent in the descriptor's own content as questions/leads/filters accrue. The provision step
+// stamps this the same moment it stamps pile.yml; re-crunching it later is the owner's deliberate act
+// (nothing runs in the background — `as_of` is the honesty). Pure; `now` is required so a build is
+// deterministic, never a hidden clock.
+export const PILE_KIND = "data-pile";
+export function emptyPileDescriptor({ id, now } = {}) {
+  if (!id) throw new Error("provision: a descriptor needs the pile's id");
+  if (!now) throw new Error("provision: a descriptor needs its snapshot time (as_of)");
+  return {
+    schema: "anecdote.describe/v1",
+    as_of: now,
+    kind: PILE_KIND,
+    questions: [],
+    filters: [],
+    counts: { questions: 0, sealed_blocks: 0 },
+  };
+}
+
 // Assemble a pile's ready-to-commit file-set from the data-pile TEMPLATE file-set and the pile's parameters.
 // template: [{ path, content }] — a data-pile template checkout (e.g. from a one-time git-enough clone).
 // Returns a NEW [{ path, content }] with pile.yml filled and keys/pile.age.pub set to the recipient; every
