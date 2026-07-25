@@ -50,9 +50,9 @@ export function emptyPileDescriptor({ id, now } = {}) {
     schema: "anecdote.describe/v1",
     as_of: now,
     kind: PILE_KIND,
-    questions: [],
-    filters: [],
-    counts: { questions: 0, sealed_blocks: 0 },
+    questions: [],   // poll anchors — solicitations (data-pile polls/*.json)
+    asks: [],        // ask anchors — citation-required leads (data-pile asks/*.json, docs/anchored-piles.md)
+    counts: { questions: 0, asks: 0, sealed_blocks: 0 },
   };
 }
 
