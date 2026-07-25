@@ -71,7 +71,8 @@ const TEMPLATE_YAML =
   const d = emptyPileDescriptor({ id: "parks-2026", now: "2026-07-25T00:00:00Z" });
   ok(d.schema === "anecdote.describe/v1" && d.as_of === "2026-07-25T00:00:00Z", "a dated describe/v1 snapshot");
   ok(d.kind === PILE_KIND && PILE_KIND === "data-pile", "one macro kind for polls and investigations alike");
-  ok(d.questions.length === 0 && d.filters.length === 0 && d.counts.questions === 0 && d.counts.sealed_blocks === 0,
+  ok(d.questions.length === 0 && d.asks.length === 0
+     && d.counts.questions === 0 && d.counts.asks === 0 && d.counts.sealed_blocks === 0,
      "'nothing here yet' is a statement, not an absence");
   let threw = false; try { emptyPileDescriptor({ id: "p" }); } catch { threw = true; }
   ok(threw, "no hidden clock — the snapshot time must be given");
