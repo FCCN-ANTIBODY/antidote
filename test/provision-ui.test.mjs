@@ -49,7 +49,10 @@ const FIXTURE = `<!doctype html><meta charset=utf-8><title>provision ui fixture<
 <script type="module">
 import { mintAgeIdentity, parseRecipient } from "http://anecdote.channel:PORT/composer/age-mint.mjs";
 import { repo } from "http://anecdote.channel:PORT/git-enough/repo.mjs";
-import { assemblePile } from "/provision/pile.mjs";
+import { generateIdentity } from "http://anecdote.channel:PORT/composer/sign.mjs";
+import { mintBottleAttestation, verifyBottleAttestation } from "http://anecdote.channel:PORT/composer/bottle-attest.mjs";
+import { saveBottle, siftBook } from "http://anecdote.channel:PORT/composer/bottle-book.mjs";
+import { assemblePile, emptyPileDescriptor, PILE_KIND } from "/provision/pile.mjs";
 window.R = { stage: "boot" };
 try {
   // 1 — the identity mints ON the device; the secret never leaves this page's JS.
@@ -88,8 +91,23 @@ try {
   for (const [, obj] of r.objects) {
     try { objectBytes += dec.decode(obj.content || obj); } catch {}
   }
+
+  // 5 — REMEMBER what was made (D7): charter the pile's bottle with the one macro kind, stamp the
+  // empty descriptor ("nothing here yet" as a dated statement), verify the charter, and save it into
+  // the device's own book — anything you create is remembered somewhere, and that somewhere is YOURS.
+  window.R.stage = "remember";
+  const platform = await generateIdentity();     // the on-device platform identity (the device IS the platform)
+  const charter = await mintBottleAttestation("https://parks-2026.tell.anecdote.channel/", platform,
+                                              { now: "2026-07-25T00:00:00.000Z", kind: PILE_KIND });
+  const verified = await verifyBottleAttestation(charter, { host: "parks-2026.tell", platformKey: platform.fingerprint });
+  const descriptor = emptyPileDescriptor({ id: "parks-2026", now: "2026-07-25T00:00:00.000Z" });
+  saveBottle(localStorage, { host: verified.host, kind: verified.kind, label: "the parks study", descriptor });
+  const remembered = siftBook(localStorage, { kind: "data-pile" });
+
   window.R = { stage: "done", recipient: minted.recipient, identityPrefix: minted.identity.slice(0, 14),
-               identityInPage: minted.identity, files, tip, objectCount: r.objects.size, objectBytes };
+               identityInPage: minted.identity, files, tip, objectCount: r.objects.size, objectBytes,
+               charter: { ok: verified.ok, kind: verified.kind },
+               remembered: remembered.map((e) => ({ host: e.host, kind: e.kind, empty: e.descriptor.counts.questions === 0, as_of: e.descriptor.as_of })) };
 } catch (e) {
   window.R = { stage: "error", error: String(e && e.message || e) };
 }
@@ -139,6 +157,14 @@ const ran = await withPage({
   const leakFiles = R.files.filter((f) => String(f.content).includes(R.identityInPage));
   ok(leakFiles.length === 0, "the private identity appears in NO assembled file");
   ok(!R.objectBytes.includes(R.identityInPage), "…and in NO committed git object — only the owner ever holds what opens the tank");
+
+  // REMEMBERED (D7): chartered with the one macro kind, empty-observable, in the device's own book.
+  ok(R.charter.ok === true && R.charter.kind === "data-pile",
+     "the pile's bottle is chartered with the signed macro kind: " + R.charter.kind);
+  ok(R.remembered.length === 1 && R.remembered[0].host === "parks-2026.tell" && R.remembered[0].kind === "data-pile",
+     "…and the device's book remembers what was made, siftable by kind");
+  ok(R.remembered[0].empty === true && R.remembered[0].as_of === "2026-07-25T00:00:00.000Z",
+     "…with the inception snapshot saying 'nothing here yet, as of' — empty is observable from birth");
 
   ok(server.foreign.length === 0, "no request escaped to any host the test did not stand up");
 });

@@ -1,7 +1,7 @@
 // Unit: provision/pile.mjs — the "empty wallet". fillPile byte-mirrors data-pile bin/pile-new.mjs, and
 // assemblePile turns the data-pile template file-set + a label into a pile's ready-to-commit files (the tree
 // git-enough buildRepo makes into the pile repo). Run: node test/provision.test.mjs
-import { fillPile, assemblePile } from "../provision/pile.mjs";
+import { fillPile, assemblePile, emptyPileDescriptor, PILE_KIND } from "../provision/pile.mjs";
 
 let fails = 0;
 const ok = (c, m) => { if (!c) { console.error("FAIL: " + m); fails++; } else console.log("  ok: " + m); };
@@ -64,6 +64,17 @@ const TEMPLATE_YAML =
   let threw = false;
   try { assemblePile([{ path: "README.md", content: "x" }], { id: "p", scope: "s", recipient: RECIP }); } catch { threw = true; }
   ok(threw, "template without pile.yml is refused");
+}
+
+// 6. the inception self-description (D7): dated, zero-count, one macro kind — empty is OBSERVABLE.
+{
+  const d = emptyPileDescriptor({ id: "parks-2026", now: "2026-07-25T00:00:00Z" });
+  ok(d.schema === "anecdote.describe/v1" && d.as_of === "2026-07-25T00:00:00Z", "a dated describe/v1 snapshot");
+  ok(d.kind === PILE_KIND && PILE_KIND === "data-pile", "one macro kind for polls and investigations alike");
+  ok(d.questions.length === 0 && d.filters.length === 0 && d.counts.questions === 0 && d.counts.sealed_blocks === 0,
+     "'nothing here yet' is a statement, not an absence");
+  let threw = false; try { emptyPileDescriptor({ id: "p" }); } catch { threw = true; }
+  ok(threw, "no hidden clock — the snapshot time must be given");
 }
 
 console.log(fails ? `\nFAILED (${fails})` : "\nok: provision — fillPile mirrors data-pile; assemblePile builds the pile file-set");
