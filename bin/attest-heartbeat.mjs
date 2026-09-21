@@ -15,7 +15,7 @@
 //   ANTIDOTE_INDEX / ANTIDOTE_LEDGER / ANTIDOTE_LEDGER_KEY   as bin/punch
 //   ANTIDOTE_HEARTBEAT   the signed receipt                        (default heartbeat.json)
 
-import { readdirSync, writeFileSync, existsSync, statSync } from "node:fs";
+import { readdirSync, writeFileSync, existsSync, statSync, mkdirSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 import { contentId, attest, loadOrCreateSigner, readJson } from "./attest.mjs";
@@ -62,7 +62,17 @@ export async function runHeartbeat(root, opts = {}) {
     schema: "antidote.heartbeat/v1", self: charter.id, constitution: charter.constitution, at,
     buckets, ledger_head: ledger?.head?.digest ?? null,
   }, signer);
+  // An archive that does not exist yet is a legitimate thing to attest — walkBuckets
+  // returns [] for a missing index and the ledger read defaults to null, so the receipt
+  // this signs is the true statement "holding nothing, checked as of T". What it could
+  // not do was LAND: a caller whose output path is a directory that has never been
+  // created (antidote/heartbeat.json, before anything has punched) took ENOENT on the
+  // write, and a heartbeat that cannot write its first beat can never write a later one.
+  // The schedule IS the retention policy, so the one failure mode to refuse is the one
+  // that makes a live archive indistinguishable from a stopped one at a glance.
+  mkdirSync(path.dirname(outPath), { recursive: true });
   writeFileSync(outPath, JSON.stringify(heartbeat, null, 2) + "\n");
+  mkdirSync(path.dirname(keyPath), { recursive: true });
   writeFileSync(path.join(path.dirname(keyPath), "ledger.fpr"), signer.fingerprint + "\n"); // the public half rides beside the key
   return { heartbeat, outPath, signer };
 }
