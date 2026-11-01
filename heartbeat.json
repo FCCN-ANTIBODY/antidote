@@ -2,13 +2,13 @@
   "schema": "antidote.heartbeat/v1",
   "self": "antidote",
   "constitution": "",
-  "at": "2026-10-01T11:36:40.225Z",
+  "at": "2026-11-01T11:49:50.590Z",
   "buckets": [],
   "ledger_head": null,
   "sig": {
     "alg": "ed25519",
-    "by": "key:sha256:ac2e259aef331add5f3f789ab23aca365966836bb4071dacd4f389318adfe8ba",
-    "key": "cgj6nJSeBer3hh8bIWpvaaE7DhLaKdJwRZ37VFyejQA=",
-    "signature": "x54D8lpme4MFjWoIq0GgQyVKPyCiWfw1qi/yYKysVqV2AyX4R76omzC9prqNf5ThSlW+F6W8XU9yPYwouXVODw=="
+    "by": "key:sha256:f18ae0bb97d089c7934770a742d5f1d4e8bb7b264e66d63531902ad13fe1f3b7",
+    "key": "o3vVYYWzfPEvih9i6pAmg/5k1SZa8uLigfVdf3TQbhY=",
+    "signature": "6WWjCvbEp4///oHi6SMMd4b04T+Ze9s3C8bmhGTiA0QzrdpIj198FUyFABC5rIn8zGPlIaprq+NEjCCteypWCw=="
   }
 }
